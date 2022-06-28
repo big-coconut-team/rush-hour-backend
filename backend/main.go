@@ -5,6 +5,7 @@ import (
 
     "github.com/gin-gonic/gin"
     "scalable-final-proj/backend/controllers"
+    "scalable-final-proj/backend/models"
 )
 
 // album represents data about a record album.
@@ -23,15 +24,19 @@ var albums = []album{
 }
 
 func main() {
+    
+    models.ConnectDataBase()
+
     router := gin.Default()
 
     public := router.Group("/api")
 
     public.POST("/signup", controllers.Register)
 
-    router.GET("/albums", getAlbums)
-    router.GET("/albums/:id", getAlbumByID)
-    router.POST("/albums", postAlbums)
+
+    // router.GET("/albums", getAlbums)
+    // router.GET("/albums/:id", getAlbumByID)
+    // router.POST("/albums", postAlbums)
     
 
     router.Run("localhost:8088")
