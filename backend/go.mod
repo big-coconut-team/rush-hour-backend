@@ -1,4 +1,4 @@
-module example/web-service-gin
+module scalable-final-proj/backend
 
 go 1.18
 

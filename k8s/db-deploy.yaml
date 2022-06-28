@@ -13,22 +13,18 @@ spec: # specification for deployment resource
         app: mariadb # service will look for this label
     spec: # specification for pods
       containers: # we can have one or more containers
-      - name: scalabruhdb
+      - name: mariadb_remote
         image: mariadb:latest
         ports:
-        - containerPort: 3306
+        - containerPort: 3307
         env:
           - name: MARIADB_DATABASE
-            value: scalabruhdb
+            value: scalabruh_final_db
           - name: MARIADB_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: mariadb-secret
                 key: mariadb-root-password
-        # - name: MARIADB_USER
-        #   value: superuser
-        # - name: MARIADB_PASSWORD
-        #   value: superpassword
         volumeMounts:
         - name: mariadb-persistent-storage
           mountPath: /var/lib/mariadb
