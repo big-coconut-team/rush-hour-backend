@@ -6,7 +6,7 @@ package models
 
 type User struct {
 	// gorm.Model
-	UserID int `gorm:"size:11;not null;primaryKey" json:"uid"`
+	UserID int `gorm:"primary_key;size:11;not null;" json:"uid"`
 	Username string `gorm:"size:30;not null;" json:"username"`
 	Password string `gorm:"size:256;not null;" json:"password"`
 	Email string `gorm:"size:256;not null;" json:"email"`
