@@ -4,6 +4,7 @@ import (
 	// "github.com/jinzhu/gorm"
 
 	"html"
+	"log"
 	"scalable-final-proj/backend/utils"
 	"strings"
 
@@ -32,6 +33,7 @@ func LoginCheck(username string, password string) (string, error) {
 	err = DB.Model(User{}).Where("username = ?", username).Take(&u).Error
 
 	if err != nil {
+		log.Panic(err)
 		return "", err
 	}
 
@@ -44,6 +46,7 @@ func LoginCheck(username string, password string) (string, error) {
 	token, err := utils.GenerateToken(u.UserID) // generate token
 
 	if err != nil {
+		log.Panic(err)
 		return "", err
 	}
 

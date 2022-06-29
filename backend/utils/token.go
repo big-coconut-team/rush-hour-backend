@@ -23,7 +23,7 @@ func GenerateToken(uid int) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(6)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString("Writeyourownsignaturehere")
+	return token.SignedString([]byte("Writeyourownsignaturehere"))
 
 }
 
