@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -14,12 +13,7 @@ import (
 // Make sure to put token signature as enviorment variable
 // once done testing
 
-func GenerateToken(uid uint) (string, error) {
-
-	if err != nil {
-		return "", err
-	}
-
+func GenerateToken(uid int) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["uid"] = uid
@@ -73,7 +67,7 @@ func ExtractTokenID(c *gin.Context) (uint, error) {
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		uid, err := strconv.ParseInt(claims["uid"], 10, 11)
+		uid, err := strconv.ParseInt(fmt.Sprintf("%v", claims["uid"]), 10, 11)
 		if err != nil {
 			return 0, err
 		}

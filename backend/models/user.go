@@ -41,7 +41,7 @@ func LoginCheck(username string, password string) (string, error) {
 		return "", err
 	}
 
-	token, err := util.GenerateToken(u.ID) // generate token
+	token, err := utils.GenerateToken(u.UserID) // generate token
 
 	if err != nil {
 		return "", err
