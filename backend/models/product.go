@@ -16,8 +16,8 @@ type Product struct {
 	DiscountedPrice int       `gorm:"size:10;not null;" json:"discounted_price"`
 	Stock           int       `gorm:"size:11;not null;" json:"stock"`
 	NumSold         int       `gorm:"size:11;not null;" json:"num_sold"`
-	UserID          int
-	UID             int `gorm:"foreignKey:UserID;size:11;not null;" json:"uid"`
+	ID              int       `json:"uid"`
+	User            User      `gorm:"foreignKey:ID;references:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (p *Product) SaveProd() (*Product, error) {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"scalable-final-proj/backend/controllers"
+	"scalable-final-proj/backend/middlewares"
 	"scalable-final-proj/backend/models"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,10 @@ func main() {
 
 	public.POST("/signup", controllers.Register)
 	public.POST("/add_product", controllers.AddProduct)
+	public.POST("/login", controllers.Login)
+	protected := router.Group("/api/user")
+	protected.Use(middlewares.JwtAuthMiddleware())
+	protected.POST("/changepass", controllers.ChangePassword)
 
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)
