@@ -41,5 +41,5 @@ func ConnectDataBase() {
 
 	DB.DB().SetConnMaxLifetime(0)
 	DB.AutoMigrate(&User{})
-
+	DB.AutoMigrate(&Product{})
 }

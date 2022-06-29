@@ -4,6 +4,8 @@ import (
 	// "github.com/jinzhu/gorm"
 
 	"html"
+	"log"
+	"scalable-final-proj/backend/utils"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -18,10 +20,54 @@ type User struct {
 	Coin     int    `gorm:"size:10;not null;" json:"coin"`
 }
 
+func VerifyPassword(password, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func LoginCheck(username string, password string) (string, error) {
+
+	var err error
+
+	u := User{}
+
+	err = DB.Model(User{}).Where("username = ?", username).Take(&u).Error
+
+	if err != nil {
+		log.Panic(err)
+		return "", err
+	}
+
+	err = VerifyPassword(password, u.Password)
+
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return "", err
+	}
+
+	token, err := utils.GenerateToken(u.UserID) // generate token
+
+	if err != nil {
+		log.Panic(err)
+		return "", err
+	}
+
+	return token, nil
+
+}
+
 func (u *User) SaveUser() (*User, error) {
 
 	var err error
 	err = DB.Create(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+}
+
+func (u *User) UpdateUser() (*User, error) {
+
+	var err error
+	err = DB.Save(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
