@@ -40,6 +40,6 @@ func ConnectDataBase() {
 	// }
 
 	DB.DB().SetConnMaxLifetime(0)
-	DB.AutoMigrate(&User{})
-	DB.AutoMigrate(&Product{})
+	DB.AutoMigrate(&User{}, &Product{})
+	DB.Model(&Product{}).AddForeignKey("user_id", "users(user_id)", "CASCADE", "CASCADE")
 }
