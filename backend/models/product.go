@@ -1,0 +1,31 @@
+package models
+
+import (
+	// "github.com/jinzhu/gorm"
+	"time"
+)
+
+type Product struct {
+	// gorm.Model
+	ProdID          int       `gorm:"primary_key;size:11;not null;" json:"prod_id"`
+	ProdName        string    `gorm:"size:30;not null;" json:"prod_name"`
+	Details         string    `gorm:"size:1000;not null;" json:"details"`
+	StartTime       time.Time `gorm:"not null;" json:"start_time"`
+	EndTime         time.Time `gorm:"not null;" json:"end_time"`
+	InitialPrice    int       `gorm:"size:10;not null;" json:"initial_price"`
+	DiscountedPrice int       `gorm:"size:10;not null;" json:"discounted_price"`
+	Stock           int       `gorm:"size:11;not null;" json:"stock"`
+	NumSold         int       `gorm:"size:11;not null;" json:"num_sold"`
+	ID              int       `json:"uid"`
+	User            User      `gorm:"foreignKey:ID;references:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+func (p *Product) SaveProd() (*Product, error) {
+
+	var err error
+	err = DB.Create(&p).Error
+	if err != nil {
+		return &Product{}, err
+	}
+	return p, nil
+}

@@ -34,6 +34,7 @@ func main() {
 	public := router.Group("/api")
 
 	public.POST("/signup", controllers.Register)
+	public.POST("/add_product", controllers.AddProduct)
 	public.POST("/login", controllers.Login)
 	protected := router.Group("/api/user")
 	protected.Use(middlewares.JwtAuthMiddleware())
