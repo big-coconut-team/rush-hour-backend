@@ -64,6 +64,16 @@ func (u *User) SaveUser() (*User, error) {
 	return u, nil
 }
 
+func (u *User) UpdateUser() (*User, error) {
+
+	var err error
+	err = DB.Save(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+}
+
 func (u *User) BeforeSave() error {
 
 	//turn password into hash

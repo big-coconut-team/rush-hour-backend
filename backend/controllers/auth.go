@@ -3,9 +3,45 @@ package controllers
 import (
 	"net/http"
 	"scalable-final-proj/backend/models"
+	"scalable-final-proj/backend/utils"
 
 	"github.com/gin-gonic/gin"
 )
+
+type ChangePasswordInput struct {
+	NewPassword string `json:"newpassword" binding:"required"`
+}
+
+func ChangePassword(c *gin.Context) {
+	var input ChangePasswordInput
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := utils.ExtractTokenID(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	u := models.User{}
+
+	u.UserID = id
+	u.Password = input.NewPassword
+
+	_, err = u.UpdateUser()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "change password success"})
+
+}
 
 type LoginInput struct {
 	Username string `json:"username" binding:"required"`
