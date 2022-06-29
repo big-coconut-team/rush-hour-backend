@@ -39,6 +39,7 @@ func main() {
 	protected := router.Group("/api/user")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.POST("/changepass", controllers.ChangePassword)
+	protected.GET("/profile", controllers.CurrentUser)
 
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)
