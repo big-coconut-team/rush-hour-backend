@@ -5,16 +5,17 @@ import (
 
 	"html"
 	"strings"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	// gorm.Model
-	UserID int `gorm:"primary_key;size:11;not null;" json:"uid"`
+	UserID   int    `gorm:"primary_key;size:11;not null;" json:"uid"`
 	Username string `gorm:"size:30;not null;" json:"username"`
 	Password string `gorm:"size:256;not null;" json:"password"`
-	Email string `gorm:"size:256;not null;" json:"email"`
-	Coin int `gorm:"size:10;not null;" json:"coin"`
+	Email    string `gorm:"size:256;not null;" json:"email"`
+	Coin     int    `gorm:"size:10;not null;" json:"coin"`
 }
 
 func (u *User) SaveUser() (*User, error) {
@@ -30,13 +31,13 @@ func (u *User) SaveUser() (*User, error) {
 func (u *User) BeforeSave() error {
 
 	//turn password into hash
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password),bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 	u.Password = string(hashedPassword)
 
-	//remove spaces in username 
+	//remove spaces in username
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 
 	return nil
