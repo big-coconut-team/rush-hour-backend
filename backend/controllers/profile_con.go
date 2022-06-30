@@ -18,26 +18,27 @@ func CurrentUser(c *gin.Context) {
 		return
 	}
 
-	u, err := GetUserByID(uint(user_id))
+	u, p, err := GetUserByID(uint(user_id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u, "product": p})
 }
 
-func GetUserByID(uid uint) (models.User, error) {
+func GetUserByID(uid uint) (models.User, models.Product, error) {
 
 	var u models.User
+	var p models.Product
 
 	if err := models.DB.First(&u, uid).Error; err != nil {
-		return u, errors.New("User not found!")
+		return u, p, errors.New("User not found!")
 	}
 
 	u.Password = ""
 
-	return u, nil
+	return u, p, nil
 
 }
