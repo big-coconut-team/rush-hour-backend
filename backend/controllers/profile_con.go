@@ -7,6 +7,7 @@ import (
 	"scalable-final-proj/backend/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 func CurrentUser(c *gin.Context) {
@@ -18,27 +19,34 @@ func CurrentUser(c *gin.Context) {
 		return
 	}
 
-	u, p, err := GetUserByID(uint(user_id))
+	u, err := GetUserByID(uint(user_id))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	p := GetProductsByID(models.DB, uint(user_id))
+
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u, "product": p})
 }
 
-func GetUserByID(uid uint) (models.User, models.Product, error) {
+func GetUserByID(uid uint) (models.User, error) {
 
 	var u models.User
-	var p models.Product
 
 	if err := models.DB.First(&u, uid).Error; err != nil {
-		return u, p, errors.New("User not found!")
+		return u, errors.New("User not found!")
 	}
 
 	u.Password = ""
 
-	return u, p, nil
+	return u, nil
 
+}
+
+func GetProductsByID(db *gorm.DB, uid uint) []models.Product {
+	orders := make([]models.Product, 0)
+	db.Where("user_id=?", uid).Find(&models.Product{}).Scan(&orders)
+	return orders
 }
