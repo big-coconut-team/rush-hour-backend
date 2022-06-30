@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"scalable-final-proj/backend/models"
+	"scalable-final-proj/backend/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,10 +20,16 @@ type ProductInput struct {
 }
 
 func AddProduct(c *gin.Context) {
-
 	var input ProductInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := utils.ExtractTokenID(c)
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -37,8 +44,9 @@ func AddProduct(c *gin.Context) {
 	p.DiscountedPrice = input.DiscountedPrice
 	p.Stock = input.Stock
 	p.NumSold = 0
+	p.UserID = id
 
-	_, err := p.SaveProd()
+	_, err = p.SaveProd()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
