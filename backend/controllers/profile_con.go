@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
+	"scalable-final-proj/backend/models"
 	"scalable-final-proj/backend/utils"
 
 	"github.com/gin-gonic/gin"
-	"errors"
 )
 
 func CurrentUser(c *gin.Context) {
@@ -27,11 +28,11 @@ func CurrentUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
 }
 
-func GetUserByID(uid uint) (User, error) {
+func GetUserByID(uid uint) (models.User, error) {
 
-	var u User
+	var u models.User
 
-	if err := DB.First(&u, uid).Error; err != nil {
+	if err := models.DB.First(&u, uid).Error; err != nil {
 		return u, errors.New("User not found!")
 	}
 

@@ -3,6 +3,7 @@ package models
 import (
 	// "github.com/jinzhu/gorm"
 
+	"errors"
 	"html"
 	"log"
 	"scalable-final-proj/backend/utils"
@@ -87,5 +88,19 @@ func (u *User) BeforeSave() error {
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 
 	return nil
+
+}
+
+func GetUserByID(uid uint) (User, error) {
+
+	var u User
+
+	if err := DB.First(&u, uid).Error; err != nil {
+		return u, errors.New("User not found!")
+	}
+
+	u.Password = ""
+
+	return u, nil
 
 }
