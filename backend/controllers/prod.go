@@ -20,6 +20,7 @@ type ProductInput struct {
 }
 
 func AddProduct(c *gin.Context) {
+
 	var input ProductInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
