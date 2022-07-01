@@ -30,7 +30,7 @@ func LoginCheck(username string, password string) error {
 
 	if err != nil {
 		log.Panic(err)
-		return "", err
+		return err
 	}
 
 	err = VerifyPassword(password, u.Password)
