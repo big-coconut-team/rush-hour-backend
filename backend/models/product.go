@@ -2,6 +2,7 @@ package models
 
 import (
 	// "github.com/jinzhu/gorm"
+	"errors"
 	"time"
 )
 
@@ -27,4 +28,16 @@ func (p *Product) SaveProd() (*Product, error) {
 		return &Product{}, err
 	}
 	return p, nil
+}
+
+func GetProductByUID(uid uint) (Product, error) {
+
+	var p Product
+
+	if err := DB.First(&p, uid).Error; err != nil {
+		return p, errors.New("User not found!")
+	}
+
+	return p, nil
+
 }

@@ -34,12 +34,13 @@ func main() {
 	public := router.Group("/api")
 
 	public.POST("/signup", controllers.Register)
-	public.POST("/add_product", controllers.AddProduct)
 	public.POST("/login", controllers.Login)
 	protected := router.Group("/api/user")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.POST("/changepass", controllers.ChangePassword)
 	protected.GET("/profile", controllers.CurrentUser)
+	protected.POST("/add_product", controllers.AddProduct)
+	protected.POST("/list_product", controllers.DownloadPhoto)
 
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)
