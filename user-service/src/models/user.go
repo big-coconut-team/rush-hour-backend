@@ -46,6 +46,16 @@ func LoginCheck(search string, password string, isEmail bool) error {
 	return nil
 }
 
+func GetExistingUser(username string, email string) (User, error) {
+	var err error
+
+	u := User{}
+
+	err = DB.Model(&User{}).Where("LOWER(REPLACE(TRIM(username), \" \", \"\")) = LOWER(REPLACE(TRIM(?), \" \", \"\"))", username).Or("email = ?", email).First(&u).Error
+
+	return u, err
+}
+
 func (u *User) SaveUser() (*User, error) {
 
 	var err error

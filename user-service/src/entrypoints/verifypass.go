@@ -3,6 +3,7 @@ package entrypoints
 import (
 	"net/http"
 	"net/mail"
+	"regexp"
 	"user-service/models"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,11 @@ func VerifyPassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "both username and email provided."})
 		return
 	} else if len(input.Username) > 0 {
+		isAlpha := regexp.MustCompile(`^[a-zA-Z0-9 ]+$`).MatchString
+		if !isAlpha(input.Username) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "username should contain alphanumeric or spaces only"})
+			return
+		}
 		err = models.LoginCheck(input.Username, input.Password, false)
 	} else {
 		err = models.LoginCheck(input.Email, input.Password, true)
