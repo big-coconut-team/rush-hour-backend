@@ -1,6 +1,8 @@
 package entrypoints
 
 import (
+	"net/http"
+	"net/mail"
 	"user-service/models"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +18,9 @@ func Register(c *gin.Context) {
 	var input RegisterInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	} else if _, err := mail.ParseAddress(input.Email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

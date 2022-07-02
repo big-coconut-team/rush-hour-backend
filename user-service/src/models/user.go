@@ -20,13 +20,17 @@ func VerifyPassword(password, hashedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func LoginCheck(username string, password string) error {
+func LoginCheck(search string, password string, isEmail bool) error {
 
 	var err error
 
 	u := User{}
 
-	err = DB.Model(User{}).Where("username = ?", username).Take(&u).Error
+	if isEmail {
+		err = DB.Model(User{}).Where("email = ?", search).Take(&u).Error
+	} else {
+		err = DB.Model(User{}).Where("username = ?", search).Take(&u).Error
+	}
 
 	if err != nil {
 		log.Panic(err)
