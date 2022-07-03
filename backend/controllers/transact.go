@@ -53,6 +53,12 @@ type ConfirmInput struct {
 	Confirmation	bool		`json:"confirm" binding:"required"`
 }
 
+type OrderRequest struct {
+	ProdID 		int 		
+	Amount 		int			
+	UserID		int
+}
+
 func confirm(c *gin.Context) {
 
 	var input ConfirmInput
@@ -76,21 +82,18 @@ func confirm(c *gin.Context) {
 
 	ctx := context.TODO()
 
-    buf := new(bytes.Buffer)
+	orq =: OrderRequest({prod_id, amount, user_id})
 
-    // Include a Validation logic here to sanitize the req.Body when working in a production environment
+	orq_as_byte =: json.Marshal(orq)
 
-    buf.ReadFrom(req.Body)
-
-    paymentDetails := buf.String()
-
-    err := redisClient.RPush(ctx, "payments", paymentDetails).Err(); 
+    err := redisClient.RPush(ctx, "payments", ).Err(); 
 
     if err != nil {
         fmt.Fprintf(w, err.Error() + "\r\n")             
-    } else {
-        fmt.Fprintf(w, "Payment details accepted successfully\r\n")  
     }                         
 
+	// jsonify(OrderRequest)
+	// RPUSH into redisqueue
+	// worker stuff
 
 }
