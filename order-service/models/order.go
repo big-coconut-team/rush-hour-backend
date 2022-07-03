@@ -1,7 +1,5 @@
 package models
 
-
-
 type Order struct {
 	// gorm.Model
 	OrderID 		int 	`gorm:"primary_key;size:11;not null;" json:"order_id"`
