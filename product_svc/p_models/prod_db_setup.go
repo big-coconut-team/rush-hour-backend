@@ -1,4 +1,4 @@
-package models
+package p_models
 
 import (
 	// "fmt"
@@ -10,7 +10,7 @@ import (
 	// "github.com/joho/godotenv"
 )
 
-var DB *gorm.DB
+var p_DB *gorm.DB
 
 func ConnectDataBase() {
 
@@ -28,9 +28,9 @@ func ConnectDataBase() {
 	// DbPort := os.Getenv("DB_PORT")
 
 	// DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
-	DBURL := "root:rootpass@tcp(0.0.0.0:3307)/scalabruh_final_db?charset=utf8&parseTime=True&loc=Local"
+	DBURL := "root:rootpass@tcp(0.0.0.0:3308)/scalabruh_final_proj_prod_db?charset=utf8&parseTime=True&loc=Local"
 
-	DB, _ = gorm.Open(Dbdriver, DBURL)
+	p_DB, _ = gorm.Open(Dbdriver, DBURL)
 
 	// if err != nil {
 	// 	fmt.Println("Cannot connect to database ", Dbdriver)
@@ -39,6 +39,6 @@ func ConnectDataBase() {
 	// 	fmt.Println("We are connected to the database ", Dbdriver)
 	// }
 
-	DB.DB().SetConnMaxLifetime(0)
-	DB.AutoMigrate(&User{})
+	p_DB.DB().SetConnMaxLifetime(0)
+	p_DB.AutoMigrate(&Product{})
 }

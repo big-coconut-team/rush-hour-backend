@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"scalable-final-proj/backend/models"
+	"scalable-final-proj/backend/product_svc/p_models"
 	"scalable-final-proj/backend/utils"
 
 	"github.com/gin-gonic/gin"
@@ -45,8 +46,8 @@ func GetUserByID(uid uint) (models.User, error) {
 
 }
 
-func GetProductsByID(db *gorm.DB, uid uint) []models.Product {
-	orders := make([]models.Product, 0)
-	db.Where("user_id=?", uid).Find(&models.Product{}).Scan(&orders)
+func GetProductsByID(db *gorm.DB, uid uint) []p_models.Product {
+	orders := make([]p_models.Product, 0)
+	db.Where("user_id=?", uid).Find(&p_models.Product{}).Scan(&orders)
 	return orders
 }
