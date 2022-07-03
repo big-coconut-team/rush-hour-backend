@@ -1,8 +1,8 @@
 package main
 
 import (
-	"scalable-final-proj/product_svc/p_controllers"
-	"scalable-final-proj/product_svc/p_models"
+	"product_svc/p_controllers"
+	"product_svc/p_models"
 
 	"github.com/gin-gonic/gin"
 )

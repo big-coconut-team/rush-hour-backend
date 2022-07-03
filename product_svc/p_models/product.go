@@ -23,7 +23,7 @@ type Product struct {
 func (p *Product) SaveProd() (*Product, error) {
 
 	var err error
-	err = p_DB.Create(&p).Error
+	err = DB.Create(&p).Error
 	if err != nil {
 		return &Product{}, err
 	}
@@ -34,7 +34,7 @@ func GetProductByUID(uid uint) (Product, error) {
 
 	var p Product
 
-	if err := p_DB.First(&p, uid).Error; err != nil {
+	if err := DB.First(&p, uid).Error; err != nil {
 		return p, errors.New("User not found!")
 	}
 

@@ -10,7 +10,7 @@ import (
 	// "github.com/joho/godotenv"
 )
 
-var p_DB *gorm.DB
+var DB *gorm.DB
 
 func ConnectDataBase() {
 
@@ -30,7 +30,7 @@ func ConnectDataBase() {
 	// DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 	DBURL := "root:rootpass@tcp(0.0.0.0:3308)/scalabruh_final_proj_prod_db?charset=utf8&parseTime=True&loc=Local"
 
-	p_DB, _ = gorm.Open(Dbdriver, DBURL)
+	DB, _ = gorm.Open(Dbdriver, DBURL)
 
 	// if err != nil {
 	// 	fmt.Println("Cannot connect to database ", Dbdriver)
@@ -39,6 +39,6 @@ func ConnectDataBase() {
 	// 	fmt.Println("We are connected to the database ", Dbdriver)
 	// }
 
-	p_DB.DB().SetConnMaxLifetime(0)
-	p_DB.AutoMigrate(&Product{})
+	DB.DB().SetConnMaxLifetime(0)
+	DB.AutoMigrate(&Product{})
 }

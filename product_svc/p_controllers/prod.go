@@ -2,7 +2,8 @@ package p_controllers
 
 import (
 	"net/http"
-	"scalable-final-proj/product_svc/p_models"
+	"product_svc/p_models"
+	"strconv"
 	"time"
 
 	"context"
@@ -33,7 +34,8 @@ func AddProduct(c *gin.Context) {
 
 	var input ProductInput
 
-	if err := c.ShouldBindJSON(&input); err != nil {
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -71,6 +73,7 @@ func AddProduct(c *gin.Context) {
 func DownloadPhoto(c *gin.Context) {
 	// dt := time.Now()
 	path, err := os.Getwd()
+	prods_list := GetProdByTime()
 	if err != nil {
 		log.Println(err)
 	}
@@ -101,7 +104,9 @@ func DownloadPhoto(c *gin.Context) {
 			return
 		}
 		list = append(list, object.Key)
-		err = minioClient.FGetObject(context.Background(), "product", object.Key, path+"/product-list/"+object.Key, minio.GetObjectOptions{})
+		if stringInSlice(object.Key, prods_list) {
+			err = minioClient.FGetObject(context.Background(), "product", object.Key, path+"/product-list/"+object.Key, minio.GetObjectOptions{})
+		}
 		if err != nil {
 			println(list[0])
 			fmt.Println(err)
@@ -130,14 +135,24 @@ func inTimeSpan(start, end, check time.Time) bool {
 	return check.After(start) && check.Before(end)
 }
 
-func GetProdByTime(c *gin.Context) {
-	dt := time.Now()
-	var input ProductInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
 	}
+	return false
+}
+
+func GetProdByTime() []string {
+	dt := time.Now()
+	// var input ProductInput
+	var l []string
+
+	// if err := c.ShouldBindJSON(&input); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return l
+	// }
 
 	productdb, err := p_models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
 
@@ -145,17 +160,18 @@ func GetProdByTime(c *gin.Context) {
 		panic(err.Error())
 	}
 
-	prod := ProductInput{}
 	for productdb.Next() {
 		var prodID, userID int
-		var start, end time.Time
-		err = productdb.Scan(&prodID, &userID, &start, &end)
+		var path string
+		err = productdb.Scan(&prodID, &userID)
 		if err != nil {
 			panic(err.Error())
 		}
-		prod.StartTime = start
-		prod.EndTime = end
-	}
-	defer p_models.p_DB.Close()
 
+		path = "/" + strconv.Itoa(prodID) + "/" + strconv.Itoa(userID) + "/"
+		l = append(l, path)
+	}
+	defer p_models.DB.Close()
+
+	return l
 }
