@@ -46,8 +46,17 @@ func GetUserByID(uid uint) (models.User, error) {
 
 }
 
+<<<<<<< HEAD
 func GetProductsByID(db *gorm.DB, uid uint) []p_models.Product {
 	orders := make([]p_models.Product, 0)
 	db.Where("user_id=?", uid).Find(&p_models.Product{}).Scan(&orders)
 	return orders
+=======
+func GetProductsByID(db *gorm.DB, uid uint) []models.Product {
+	var keep []models.Product
+	orders := make([]models.Product, 0)
+	db.Where("user_id=?", uid).Find(&models.Product{}).Scan(&orders)
+	keep = append(keep, orders...)
+	return keep
+>>>>>>> 8f04094 (try to show many prod in profile)
 }
