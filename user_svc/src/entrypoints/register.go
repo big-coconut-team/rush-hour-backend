@@ -29,7 +29,7 @@ func Register(c *gin.Context) {
 
 	isAlpha := regexp.MustCompile(`^[a-zA-Z0-9 ]+$`).MatchString
 	if !isAlpha(input.Username) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username should contain alphanumeric or spaces only"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username should contain alphanumeric or spaces only."})
 		return
 	}
 
@@ -38,7 +38,7 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": status.Error()})
 		return
 	} else if status != gorm.ErrRecordNotFound {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user/email already exists"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User/Email already exists!"})
 		return
 	}
 
@@ -56,5 +56,5 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "registration success"})
+	c.JSON(http.StatusOK, gin.H{"message": "Registration success."})
 }

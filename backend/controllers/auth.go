@@ -1,15 +1,25 @@
 package controllers
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
-	"scalable-final-proj/backend/models"
 	"scalable-final-proj/backend/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
+var USER_SERVICE_ADDR = "localhost" // change this to localhost if testing locally
+var USER_SERVICE_PORT = "8000"
+
 type ChangePasswordInput struct {
 	NewPassword string `json:"newpassword" binding:"required"`
+}
+
+type ChangePasswordOutput struct {
+	UserID      int    `json:"uid"`
+	NewPassword string `json:"newpassword"`
 }
 
 func ChangePassword(c *gin.Context) {
@@ -27,81 +37,100 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	u := models.User{}
+	payload, errr := json.Marshal(&ChangePasswordOutput{UserID: id, NewPassword: input.NewPassword})
+	if errr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	res := bytes.NewBuffer(payload)
 
-	u.UserID = id
-	u.Password = input.NewPassword
-
-	_, err = u.UpdateUser()
+	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/changepassword", "application/json", res)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "change password success"})
+	defer resp.Body.Close()
+
+	body, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	sb := string(body)
+
+	c.JSON(resp.StatusCode, sb)
 
 }
 
-type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+type ReturnedVerfiedMessage struct {
+	Message string `json:"message"`
+	UserID  int    `json:"uid"`
 }
 
 func Login(c *gin.Context) {
 
-	var input LoginInput
+	payload, err := ioutil.ReadAll(c.Request.Body)
+	res := bytes.NewBuffer(payload)
 
-	if err := c.ShouldBindJSON(&input); err != nil {
+	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/verifypassword", "application/json", res)
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	u := models.User{}
+	defer resp.Body.Close()
 
-	u.Username = input.Username
-	u.Password = input.Password
+	body, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	sb := string(body)
 
-	token, err := models.LoginCheck(u.Username, u.Password)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password is incorrect."})
+	if resp.StatusCode != http.StatusOK {
+		c.JSON(http.StatusBadRequest, sb)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	var payloadStruct ReturnedVerfiedMessage
+	if err3 := json.Unmarshal([]byte(sb), &payloadStruct); err3 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-}
+	token, err3 := utils.GenerateToken(payloadStruct.UserID)
 
-type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Email    string `json:"email" binding:"required"`
+	if err3 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": payloadStruct.Message, "token": token})
+
 }
 
 func Register(c *gin.Context) {
+	payload, err := ioutil.ReadAll(c.Request.Body)
+	res := bytes.NewBuffer(payload)
 
-	var input RegisterInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	u := models.User{}
-
-	u.Username = input.Username
-	u.Password = input.Password
-	u.Email = input.Email
-	u.Coin = 0
-
-	_, err := u.SaveUser()
+	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/signup", "application/json", res)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "registration success"})
+	defer resp.Body.Close()
 
+	body, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	sb := string(body)
+
+	c.JSON(resp.StatusCode, sb)
 }

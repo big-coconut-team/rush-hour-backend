@@ -34,8 +34,13 @@ func AddProduct(c *gin.Context) {
 
 	var input ProductInput
 
+<<<<<<< HEAD
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
+=======
+		
+	if err := c.ShouldBindJSON(&input); err != nil {
+>>>>>>> 1a460774eacad66193cea68ddc5a40ec805928a9
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
