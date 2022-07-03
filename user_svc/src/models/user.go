@@ -2,7 +2,6 @@ package models
 
 import (
 	"html"
-	"log"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -29,11 +28,10 @@ func LoginCheck(search string, password string, isEmail bool) error {
 	if isEmail {
 		err = DB.Model(User{}).Where("email = ?", search).Take(&u).Error
 	} else {
-		err = DB.Model(User{}).Where("username = ?", search).Take(&u).Error
+		err = DB.Model(User{}).Where("LOWER(REPLACE(TRIM(username), \" \", \"\")) = LOWER(REPLACE(TRIM(?), \" \", \"\"))", search).Take(&u).Error
 	}
 
 	if err != nil {
-		log.Panic(err)
 		return err
 	}
 
@@ -66,10 +64,10 @@ func (u *User) SaveUser() (*User, error) {
 	return u, nil
 }
 
-func (u *User) UpdateUser() (*User, error) {
+func (u *User) UpdateUser(fields ...string) (*User, error) {
 
 	var err error
-	err = DB.Save(&u).Error
+	err = DB.Select(fields).Save(&u).Error
 	if err != nil {
 		return &User{}, err
 	}

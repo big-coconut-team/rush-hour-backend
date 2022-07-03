@@ -6,6 +6,7 @@ import (
 	"scalable-final-proj/backend/controllers"
 	"scalable-final-proj/backend/middlewares"
 	"scalable-final-proj/backend/models"
+	"scalable-final-proj/backend/product_svc/p_controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,8 +40,8 @@ func main() {
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.POST("/changepass", controllers.ChangePassword)
 	protected.GET("/profile", controllers.CurrentUser)
-	protected.POST("/add_product", controllers.AddProduct)
-	protected.POST("/list_product", controllers.DownloadPhoto)
+	protected.POST("/add_product", p_controllers.AddProduct)
+	protected.POST("/list_product", p_controllers.DownloadPhoto)
 
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)

@@ -1,9 +1,8 @@
-package controllers
+package p_controllers
 
 import (
 	"net/http"
-	"scalable-final-proj/backend/models"
-	"scalable-final-proj/backend/utils"
+	"scalable-final-proj/product_svc/p_models"
 	"time"
 
 	"context"
@@ -27,6 +26,7 @@ type ProductInput struct {
 	InitialPrice    int       `json:"initial_price" binding:"required"`
 	DiscountedPrice int       `json:"discounted_price" binding:"required"`
 	Stock           int       `json:"stock" binding:"required"`
+	UID             int       `json:"uid" binding:"required"`
 }
 
 func AddProduct(c *gin.Context) {
@@ -39,14 +39,14 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	id, err := utils.ExtractTokenID(c)
+	// id, err := utils.ExtractTokenID(c)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	p := models.Product{}
+	p := p_models.Product{}
 
 	p.ProdName = input.ProdName
 	p.Details = input.Details
@@ -56,7 +56,7 @@ func AddProduct(c *gin.Context) {
 	p.DiscountedPrice = input.DiscountedPrice
 	p.Stock = input.Stock
 	p.NumSold = 0
-	p.UserID = id
+	p.UserID = input.UID
 
 	_, err = p.SaveProd()
 
@@ -140,7 +140,7 @@ func GetProdByTime(c *gin.Context) {
 		return
 	}
 
-	productdb, err := models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
+	productdb, err := p_models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
 
 	if err != nil {
 		panic(err.Error())
@@ -157,6 +157,6 @@ func GetProdByTime(c *gin.Context) {
 		prod.StartTime = start
 		prod.EndTime = end
 	}
-	defer models.DB.Close()
+	defer p_models.p_DB.Close()
 
 }

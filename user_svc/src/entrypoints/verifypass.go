@@ -29,15 +29,15 @@ func VerifyPassword(c *gin.Context) {
 	var err error
 
 	if len(input.Username) == 0 && len(input.Email) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "no username/email is given."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No username/email is given..."})
 		return
 	} else if len(input.Username) > 0 && len(input.Email) > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "both username and email provided."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Both username and email provided..."})
 		return
 	} else if len(input.Username) > 0 {
 		isAlpha := regexp.MustCompile(`^[a-zA-Z0-9 ]+$`).MatchString
 		if !isAlpha(input.Username) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "username should contain alphanumeric or spaces only"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Username should contain alphanumeric or spaces only."})
 			return
 		}
 		err = models.LoginCheck(input.Username, input.Password, false)
@@ -46,9 +46,9 @@ func VerifyPassword(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username/email or password is incorrect."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username/email or password is incorrect!"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "correct password entered"})
+	c.JSON(http.StatusOK, gin.H{"message": "Correct password entered."})
 }
