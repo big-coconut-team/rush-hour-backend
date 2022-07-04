@@ -27,6 +27,7 @@ func VerifyPassword(c *gin.Context) {
 	}
 
 	var err error
+	var id int
 
 	if len(input.Username) == 0 && len(input.Email) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No username/email is given..."})
@@ -40,9 +41,9 @@ func VerifyPassword(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Username should contain alphanumeric or spaces only."})
 			return
 		}
-		err = models.LoginCheck(input.Username, input.Password, false)
+		id, err = models.LoginCheck(input.Username, input.Password, false)
 	} else {
-		err = models.LoginCheck(input.Email, input.Password, true)
+		id, err = models.LoginCheck(input.Email, input.Password, true)
 	}
 
 	if err != nil {
@@ -50,5 +51,5 @@ func VerifyPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Correct password entered."})
+	c.JSON(http.StatusOK, gin.H{"message": "Correct password entered.", "uid": id})
 }

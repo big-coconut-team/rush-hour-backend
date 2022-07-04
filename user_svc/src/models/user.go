@@ -19,7 +19,7 @@ func VerifyPassword(password, hashedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func LoginCheck(search string, password string, isEmail bool) error {
+func LoginCheck(search string, password string, isEmail bool) (int, error) {
 
 	var err error
 
@@ -32,16 +32,16 @@ func LoginCheck(search string, password string, isEmail bool) error {
 	}
 
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	err = VerifyPassword(password, u.Password)
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return err
+		return -1, err
 	}
 
-	return nil
+	return u.UserID, nil
 }
 
 func GetExistingUser(username string, email string) (User, error) {
