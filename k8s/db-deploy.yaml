@@ -13,10 +13,10 @@ spec: # specification for deployment resource
         app: mariadb # service will look for this label
     spec: # specification for pods
       containers: # we can have one or more containers
-      - name: mariadb_remote
+      - name: finaldb
         image: mariadb:latest
         ports:
-        - containerPort: 3307
+        - containerPort: 3310
         env:
           - name: MARIADB_DATABASE
             value: scalabruh_final_db
