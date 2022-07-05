@@ -4,6 +4,8 @@ import (
 	// "context"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"encoding/json"
+	"bytes"
 
 	"scalable-final-proj/payment-service/models"
 	_ "github.com/jinzhu/gorm/dialects/mysql"	
@@ -37,7 +39,17 @@ func CreatePayment(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "payment created"})
+	USER_SERVICE_ADDR := "localhost"
+	USER_SERVICE_PORT := "3333"
+	res, err :=json.Marshal(p)
+
+	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/listen_order", "application/json", bytes.NewBuffer(res))
+
+	c.JSON(http.StatusOK, gin.H{"message": resp.Body})
+	
+	defer resp.Body.Close()
+
+	// c.JSON(http.StatusOK, gin.H{"message": "payment created"})
 }
 
 
