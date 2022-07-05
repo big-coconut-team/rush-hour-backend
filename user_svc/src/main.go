@@ -15,6 +15,7 @@ func main() {
 	router.POST("/signup", entrypoints.Register)
 	router.POST("/verifypassword", entrypoints.VerifyPassword)
 	router.POST("/changepassword", entrypoints.ChangePassword)
+	router.POST("/getuser", entrypoints.GetUser)
 
 	router.Run("localhost:8000")
 }

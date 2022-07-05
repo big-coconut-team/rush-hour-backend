@@ -44,6 +44,16 @@ func LoginCheck(search string, password string, isEmail bool) (int, error) {
 	return u.UserID, nil
 }
 
+func GetExistingUserByID(uid int) (User, error) {
+	var err error
+
+	u := User{}
+
+	err = DB.Model(&User{}).Where("user_id = ?", uid).First(&u).Error
+
+	return u, err
+}
+
 func GetExistingUser(username string, email string) (User, error) {
 	var err error
 
