@@ -73,7 +73,7 @@ func AddProduct(c *gin.Context) {
 func DownloadPhoto(c *gin.Context) {
 	// dt := time.Now()
 	path, err := os.Getwd()
-	prods_list := GetProdByTime()
+	prods_list, prod_details := GetProdByTime()
 	if err != nil {
 		log.Println(err)
 	}
@@ -91,68 +91,58 @@ func DownloadPhoto(c *gin.Context) {
 		log.Fatalln(err)
 	}
 
-	// uid, err := utils.ExtractTokenID(c)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	for object := range minioClient.ListObjects(context.Background(), "product", minio.ListObjectsOptions{Recursive: true}) {
-		if object.Err != nil {
-			fmt.Println(object.Err)
-			return
-		}
-		list = append(list, object.Key)
-		if stringInSlice(object.Key, prods_list) {
-			err = minioClient.FGetObject(context.Background(), "product", object.Key, path+"/product-list/"+object.Key, minio.GetObjectOptions{})
-		}
+	for _, object := range prods_list {
+		err = minioClient.FGetObject(context.Background(), "product", object, path+"/product-list/"+object, minio.GetObjectOptions{})
+
 		if err != nil {
 			println(list[0])
 			fmt.Println(err)
 			return
 		}
 
-		// localFile, err := os.Create("my-testfile")
-		// if err != nil {
-		// 	log.Fatalln(err)
-		// }
-		// defer localFile.Close()
-
-		// stat, err := reader.Stat()
-		// if err != nil {
-		// 	log.Fatalln(err)
-		// }
-
-		// if _, err := io.CopyN(localFile, reader, stat.Size); err != nil {
-		// 	log.Fatalln(err)
-		// }
 	}
-	c.JSON(http.StatusOK, gin.H{"message": list})
-}
 
-func inTimeSpan(start, end, check time.Time) bool {
-	return check.After(start) && check.Before(end)
-}
+	// for object := range minioClient.ListObjects(context.Background(), "product", minio.ListObjectsOptions{Recursive: true}) {
+	// 	if object.Err != nil {
+	// 		fmt.Println(object.Err)
+	// 		return
+	// 	}
+	// 	list = append(list, object.Key)
+	// 	if stringInSlice(object.Key, prods_list) {
+	// 		err = minioClient.FGetObject(context.Background(), "product", object.Key, path+"/product-list/"+object.Key, minio.GetObjectOptions{})
+	// 	}
+	// 	if err != nil {
+	// 		println(list[0])
+	// 		fmt.Println(err)
+	// 		return
+	// 	}
 
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}
-
-func GetProdByTime() []string {
-	dt := time.Now()
-	// var input ProductInput
-	var l []string
-
-	// if err := c.ShouldBindJSON(&input); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return l
 	// }
+	c.JSON(http.StatusOK, gin.H{"details": prod_details})
+}
+
+// func inTimeSpan(start, end, check time.Time) bool {
+// 	return check.After(start) && check.Before(end)
+// }
+
+// func stringInSlice(a string, list []string) bool {
+// 	for _, b := range list {
+// 		if b == a {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
+
+func GetProdByTime() ([]string, []byte) {
+	dt := time.Now()
+	var l []string
+	var list []byte
 
 	productdb, err := p_models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
 
@@ -161,17 +151,40 @@ func GetProdByTime() []string {
 	}
 
 	for productdb.Next() {
-		var prodID, userID int
-		var path string
-		err = productdb.Scan(&prodID, &userID)
+		// 	ProdName        string    `json:"prod_name" binding:"required"`
+		// Details         string    `json:"details" binding:"required"`
+		// StartTime       time.Time `json:"start_time" binding:"required"`
+		// EndTime         time.Time `json:"end_time" binding:"required"`
+		// InitialPrice    int       `json:"initial_price" binding:"required"`
+		// DiscountedPrice int       `json:"discounted_price" binding:"required"`
+		// Stock           int
+		var prod_id, user_id, initial_price, discounted_price, stock, num_sold int
+		var path, prod_name, details string
+		var start_time, end_time time.Time
+		err = productdb.Scan(&prod_id, &prod_name, &details, &start_time, &end_time, &initial_price, &discounted_price, &stock, &num_sold, &user_id)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		path = "/" + strconv.Itoa(prodID) + "/" + strconv.Itoa(userID) + "/"
+		path = "/" + strconv.Itoa(prod_id) + "/" + strconv.Itoa(user_id) + "/"
 		l = append(l, path)
+
+		each := gin.H{
+			"prod_id":          prod_id,
+			"prod_name":        prod_name,
+			"details":          details,
+			"start_time":       start_time,
+			"end_time":         end_time,
+			"initial_price":    initial_price,
+			"discounted_price": discounted_price,
+			"stock":            stock,
+			"num_sold":         num_sold,
+			"user_id":          user_id,
+		}
+
+		list = append(list, each)
 	}
 	defer p_models.DB.Close()
 
-	return l
+	return l, list
 }
