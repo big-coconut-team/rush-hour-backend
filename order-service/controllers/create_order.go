@@ -4,14 +4,11 @@ import (
 	// "context"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"encoding/json"
+	"bytes"
 
 	"scalable-final-proj/order-service/models"
-	// "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"	
-	// "github.com/go-redis/redis"
-    // "context"  
-    // "bytes" 
-    // "fmt"  
 )
 
 type CreateOrderInput struct {
@@ -41,5 +38,13 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "order created"})
+	USER_SERVICE_ADDR := "localhost"
+	USER_SERVICE_PORT := "3333"
+	res, err :=json.Marshal(o)
+
+	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/start_order", "application/json", bytes.NewBuffer(res))
+
+	c.JSON(http.StatusOK, gin.H{"message": resp.Body})
+	
+	defer resp.Body.Close()
 }
