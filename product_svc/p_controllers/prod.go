@@ -1,6 +1,7 @@
 package p_controllers
 
 import (
+	"encoding/json"
 	"net/http"
 	"product_svc/p_models"
 	"strconv"
@@ -139,10 +140,11 @@ func DownloadPhoto(c *gin.Context) {
 // 	return false
 // }
 
-func GetProdByTime() ([]string, []byte) {
+func GetProdByTime() ([]string, []p_models.Product) {
+
 	dt := time.Now()
 	var l []string
-	var list []byte
+	var list []p_models.Product
 
 	productdb, err := p_models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
 
@@ -151,6 +153,7 @@ func GetProdByTime() ([]string, []byte) {
 	}
 
 	for productdb.Next() {
+		var product p_models.Product
 		var prod_id, user_id, initial_price, discounted_price, stock, num_sold int
 		var path, prod_name, details string
 		var start_time, end_time time.Time
@@ -162,7 +165,7 @@ func GetProdByTime() ([]string, []byte) {
 		path = "/" + strconv.Itoa(user_id) + "/" + strconv.Itoa(prod_id) + "/"
 		l = append(l, path)
 
-		each := gin.H{
+		product_json := map[string]interface{}{
 			"prod_id":          prod_id,
 			"prod_name":        prod_name,
 			"details":          details,
@@ -174,8 +177,9 @@ func GetProdByTime() ([]string, []byte) {
 			"num_sold":         num_sold,
 			"user_id":          user_id,
 		}
+		json.Unmarshal([]byte(product_json), &product)
+		list = append(list, product)
 
-		list = append(list, each)
 	}
 	defer p_models.DB.Close()
 
