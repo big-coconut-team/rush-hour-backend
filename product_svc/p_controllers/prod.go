@@ -1,7 +1,7 @@
 package p_controllers
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"net/http"
 	"product_svc/p_models"
 	"strconv"
@@ -153,7 +153,7 @@ func GetProdByTime() ([]string, []p_models.Product) {
 	}
 
 	for productdb.Next() {
-		var product p_models.Product
+		// var product p_models.Product
 		var prod_id, user_id, initial_price, discounted_price, stock, num_sold int
 		var path, prod_name, details string
 		var start_time, end_time time.Time
@@ -165,20 +165,39 @@ func GetProdByTime() ([]string, []p_models.Product) {
 		path = "/" + strconv.Itoa(user_id) + "/" + strconv.Itoa(prod_id) + "/"
 		l = append(l, path)
 
-		product_json := map[string]interface{}{
-			"prod_id":          prod_id,
-			"prod_name":        prod_name,
-			"details":          details,
-			"start_time":       start_time,
-			"end_time":         end_time,
-			"initial_price":    initial_price,
-			"discounted_price": discounted_price,
-			"stock":            stock,
-			"num_sold":         num_sold,
-			"user_id":          user_id,
-		}
-		json.Unmarshal([]byte(product_json), &product)
-		list = append(list, product)
+		// product_json := map[string]interface{}{
+		// 	"prod_id":          prod_id,
+		// 	"prod_name":        prod_name,
+		// 	"details":          details,
+		// 	"start_time":       start_time,
+		// 	"end_time":         end_time,
+		// 	"initial_price":    initial_price,
+		// 	"discounted_price": discounted_price,
+		// 	"stock":            stock,
+		// 	"num_sold":         num_sold,
+		// 	"user_id":          user_id,
+		// }
+
+		// product_json := fmt.Sprintf(`{"prod_id":%s,"prod_name":%s,"details":%s,"start_time":%s,"end_time":%s,"initial_price":%s,"discounted_price":%s,"stock":%s,"num_sold":%s,"user_id":%s}`
+		// , prod_id, prod_name, details, start_time, end_time, initial_price, discounted_price, stock, num_sold, user_id)
+
+		// json.Unmarshal([]byte(product_json), &product)
+
+		p := p_models.Product{}
+		
+		p.ProdID = prod_id
+		p.ProdName = prod_name
+		p.Details = details
+		p.StartTime = start_time
+		p.EndTime = end_time
+		p.InitialPrice = initial_price
+		p.DiscountedPrice = discounted_price
+		p.Stock = stock
+		p.NumSold = num_sold
+		p.UserID = user_id
+	
+
+		list = append(list, p)
 
 	}
 	defer p_models.DB.Close()
