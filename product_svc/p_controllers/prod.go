@@ -151,13 +151,6 @@ func GetProdByTime() ([]string, []byte) {
 	}
 
 	for productdb.Next() {
-		// 	ProdName        string    `json:"prod_name" binding:"required"`
-		// Details         string    `json:"details" binding:"required"`
-		// StartTime       time.Time `json:"start_time" binding:"required"`
-		// EndTime         time.Time `json:"end_time" binding:"required"`
-		// InitialPrice    int       `json:"initial_price" binding:"required"`
-		// DiscountedPrice int       `json:"discounted_price" binding:"required"`
-		// Stock           int
 		var prod_id, user_id, initial_price, discounted_price, stock, num_sold int
 		var path, prod_name, details string
 		var start_time, end_time time.Time
@@ -166,7 +159,7 @@ func GetProdByTime() ([]string, []byte) {
 			panic(err.Error())
 		}
 
-		path = "/" + strconv.Itoa(prod_id) + "/" + strconv.Itoa(user_id) + "/"
+		path = "/" + strconv.Itoa(user_id) + "/" + strconv.Itoa(prod_id) + "/"
 		l = append(l, path)
 
 		each := gin.H{
