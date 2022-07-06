@@ -13,7 +13,7 @@ func StartOrder(c *gin.Context) {
     topic := "order"
 
     p, err := kafka.NewProducer(&kafka.ConfigMap{
-        "bootstrap.servers": "localhost:9092",
+        "bootstrap.servers": "localhost",
         // "client.id": "localhost",
         // "acks": "all"
     })
@@ -60,12 +60,10 @@ func StartOrder(c *gin.Context) {
 
 func ListenOrder(c *gin.Context) {
     consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-        "bootstrap.servers": "localhost:9092",
-        "group.id": "go_example_group_1",
+		"bootstrap.servers": "localhost",
+		"group.id":          "weloveajkanat",
+	})
 
-        // "client.id": "localhost",
-        // "acks": "all"
-    })
     if err != nil {
         log.Panic(err)
     }
