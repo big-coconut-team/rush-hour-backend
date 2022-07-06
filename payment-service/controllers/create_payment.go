@@ -43,7 +43,7 @@ func CreatePayment(c *gin.Context) {
 	USER_SERVICE_PORT := "3333"
 	res, err :=json.Marshal(p)
 
-	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/listen_order", "application/json", bytes.NewBuffer(res))
+	// resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/listen_order", "application/json", bytes.NewBuffer(res))
 
 	c.JSON(http.StatusOK, gin.H{"message": resp.Body})
 	

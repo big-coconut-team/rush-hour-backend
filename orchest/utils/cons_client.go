@@ -21,7 +21,10 @@ func ListenOrder() {
 		log.Panic(err)
 	}
 
-	err2 := consumer.Subscribe("order", nil)
+
+	var topics []string
+	topics = append(topics, "order")
+	err2 := consumer.SubscribeTopics(topics, nil)
 
 	if err2 != nil {
 		log.Panic(err)
