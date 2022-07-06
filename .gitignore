@@ -1,2 +1,4 @@
 dockerconfigjson.yaml
 db-secret.yaml
+*.tgz
+*.zip
