@@ -45,7 +45,8 @@ func CreatePayment(c *gin.Context) {
 
 	resp, err := http.Post("http://"+USER_SERVICE_ADDR+":"+USER_SERVICE_PORT+"/start_pay", "application/json", bytes.NewBuffer(res))
 
-	c.JSON(http.StatusOK, gin.H{"message": resp.Body})
+	c.JSON(http.StatusOK, gin.H{"message": resp.Body,
+"data sent": p.Paid})
 	
 	defer resp.Body.Close()
 
