@@ -110,6 +110,33 @@ func DownloadPhoto(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"details": prod_details})
 }
 
+type UpdateStockInput struct {
+	ProdID  int `json:"prod_id" binding:"required"`
+	NumItem int `json:"num_item" binding:"required"`
+}
+
+func GetStockUpdate(c *gin.Context) {
+
+	var input UpdateStockInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	p := p_models.Product{}
+
+	_, err = p.UpdateStock(input.ProdID, input.NumItem)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "stock updated"})
+}
+
 // func inTimeSpan(start, end, check time.Time) bool {
 // 	return check.After(start) && check.Before(end)
 // }
