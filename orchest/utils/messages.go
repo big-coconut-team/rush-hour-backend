@@ -50,7 +50,7 @@ type CPInput struct {
 	PaymentID 		int 	`json:"payment_id" binding:"required"`
 	MadeByUserID   	int 	`json:"made_by_id" binding:"required"`
 	Amount			int		`json:"amount" binding:"required"`
-	Paid			bool	`json:"paid" binding:"required"`
+	Paid			bool	`json:"paid"`
 }
 
 func SendMSGPayment(c *gin.Context) {
@@ -59,6 +59,7 @@ func SendMSGPayment(c *gin.Context) {
 
     err := c.ShouldBindJSON(&input)
     if err != nil {
+		log.Panic(err)
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
