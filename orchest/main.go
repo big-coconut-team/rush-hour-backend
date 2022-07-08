@@ -35,6 +35,7 @@ func main() {
 	// public := router.Group("/api")
 
 	router.POST("/start_order", utils.StartOrder)
+	router.POST("/start_pay", utils.SendMSGPayment)
 
 	router.Run("localhost:3333")
 }
