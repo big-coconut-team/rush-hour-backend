@@ -4,7 +4,6 @@ import (
 	// "encoding/json"
 	"net/http"
 	"product_svc/p_models"
-	"strconv"
 	"time"
 
 	"context"
@@ -74,7 +73,7 @@ func AddProduct(c *gin.Context) {
 func DownloadPhoto(c *gin.Context) {
 	// dt := time.Now()
 	path, err := os.Getwd()
-	prods_list, prod_details := GetProdByTime()
+	prods_list, prod_details := p_models.GetProdByTime()
 	if err != nil {
 		log.Println(err)
 	}
@@ -108,23 +107,34 @@ func DownloadPhoto(c *gin.Context) {
 
 	}
 
-	// for object := range minioClient.ListObjects(context.Background(), "product", minio.ListObjectsOptions{Recursive: true}) {
-	// 	if object.Err != nil {
-	// 		fmt.Println(object.Err)
-	// 		return
-	// 	}
-	// 	list = append(list, object.Key)
-	// 	if stringInSlice(object.Key, prods_list) {
-	// 		err = minioClient.FGetObject(context.Background(), "product", object.Key, path+"/product-list/"+object.Key, minio.GetObjectOptions{})
-	// 	}
-	// 	if err != nil {
-	// 		println(list[0])
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-
-	// }
 	c.JSON(http.StatusOK, gin.H{"details": prod_details})
+}
+
+type UpdateStockInput struct {
+	ProdID  int `json:"prod_id" binding:"required"`
+	NumItem int `json:"num_item" binding:"required"`
+}
+
+func GetStockUpdate(c *gin.Context) {
+
+	var input UpdateStockInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	p := p_models.Product{}
+
+	_, err = p.UpdateStock(input.ProdID, input.NumItem)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "stock updated"})
 }
 
 // func inTimeSpan(start, end, check time.Time) bool {
@@ -139,68 +149,3 @@ func DownloadPhoto(c *gin.Context) {
 // 	}
 // 	return false
 // }
-
-func GetProdByTime() ([]string, []p_models.Product) {
-
-	dt := time.Now()
-	var l []string
-	var list []p_models.Product
-
-	productdb, err := p_models.DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	for productdb.Next() {
-		// var product p_models.Product
-		var prod_id, user_id, initial_price, discounted_price, stock, num_sold int
-		var path, prod_name, details string
-		var start_time, end_time time.Time
-		err = productdb.Scan(&prod_id, &prod_name, &details, &start_time, &end_time, &initial_price, &discounted_price, &stock, &num_sold, &user_id)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		path = "/" + strconv.Itoa(user_id) + "/" + strconv.Itoa(prod_id) + "/"
-		l = append(l, path)
-
-		// product_json := map[string]interface{}{
-		// 	"prod_id":          prod_id,
-		// 	"prod_name":        prod_name,
-		// 	"details":          details,
-		// 	"start_time":       start_time,
-		// 	"end_time":         end_time,
-		// 	"initial_price":    initial_price,
-		// 	"discounted_price": discounted_price,
-		// 	"stock":            stock,
-		// 	"num_sold":         num_sold,
-		// 	"user_id":          user_id,
-		// }
-
-		// product_json := fmt.Sprintf(`{"prod_id":%s,"prod_name":%s,"details":%s,"start_time":%s,"end_time":%s,"initial_price":%s,"discounted_price":%s,"stock":%s,"num_sold":%s,"user_id":%s}`
-		// , prod_id, prod_name, details, start_time, end_time, initial_price, discounted_price, stock, num_sold, user_id)
-
-		// json.Unmarshal([]byte(product_json), &product)
-
-		p := p_models.Product{}
-		
-		p.ProdID = prod_id
-		p.ProdName = prod_name
-		p.Details = details
-		p.StartTime = start_time
-		p.EndTime = end_time
-		p.InitialPrice = initial_price
-		p.DiscountedPrice = discounted_price
-		p.Stock = stock
-		p.NumSold = num_sold
-		p.UserID = user_id
-	
-
-		list = append(list, p)
-
-	}
-	defer p_models.DB.Close()
-
-	return l, list
-}

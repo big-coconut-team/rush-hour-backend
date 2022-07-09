@@ -2,4 +2,5 @@ dockerconfigjson.yaml
 db-secret.yaml
 *.tgz
 *.zip
+.env
 kafka_2.13-3.2.0/
