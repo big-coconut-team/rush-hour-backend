@@ -4,6 +4,7 @@ import (
 	"html"
 	"strings"
 
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -74,18 +75,17 @@ func (u *User) SaveUser() (*User, error) {
 	return u, nil
 }
 
-func (u *User) UpdateUser(fields ...string) (*User, error) {
+func (u *User) UpdateUser() (*User, error) {
 
 	var err error
-	err = DB.Select(fields).Save(&u).Error
+	err = DB.Model(&User{}).Updates(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
 	return u, nil
 }
 
-func (u *User) BeforeSave() error {
-
+func BeforeChangeProceedure(u *User) error {
 	//turn password into hash
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -97,5 +97,29 @@ func (u *User) BeforeSave() error {
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 
 	return nil
+}
 
+func (u *User) BeforeUpdate(scope *gorm.Scope) error {
+	//turn password into hash
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	scope.SetColumn("Password", string(hashedPassword))
+
+	return nil
+}
+
+func (u *User) BeforeSave() error {
+	//turn password into hash
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+
+	//remove spaces in username
+	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
+
+	return nil
 }

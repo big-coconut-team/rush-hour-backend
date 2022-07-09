@@ -13,17 +13,18 @@ import (
 var USER_SERVICE_ADDR = "localhost" // change this to localhost if testing locally
 var USER_SERVICE_PORT = "8000"
 
-type ChangePasswordInput struct {
-	NewPassword string `json:"newpassword" binding:"required"`
+type UpdateInfoInput struct {
+	NewPassword string `json:"newpassword"`
+	NewEmail    string `json:"newemail"`
 }
 
-type ChangePasswordOutput struct {
+type UpdateInfoOutput struct {
 	UserID      int    `json:"uid"`
 	NewPassword string `json:"newpassword"`
 }
 
-func ChangePassword(c *gin.Context) {
-	var input ChangePasswordInput
+func UpdateInfo(c *gin.Context) {
+	var input UpdateInfoInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -37,7 +38,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	payload, errr := json.Marshal(&ChangePasswordOutput{UserID: id, NewPassword: input.NewPassword})
+	payload, errr := json.Marshal(&UpdateInfoOutput{UserID: id, NewPassword: input.NewPassword, NewEmail: input.NewEmail})
 	if errr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
