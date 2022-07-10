@@ -125,7 +125,7 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 
 		if stock >= numItems {
 			var err error
-			newStock := stock - num_sold
+			newStock := stock - numItems
 			newNumSold := num_sold + numItems
 			err = DB.Model(&p).Where("prod_id = ?", prodID).Select("stock", "num_sold").Updates(Product{Stock: newStock, NumSold: newNumSold}).Error
 
