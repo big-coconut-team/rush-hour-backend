@@ -6,7 +6,7 @@ import (
 	"os"
 	// "strings"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-
+	"encoding/json"
 )
 
 func RunQueue() {
@@ -19,7 +19,7 @@ func RunQueue() {
 		log.Panic(err)
 	}
 
-	err = consumer.Subscribe("order", nil)
+	err = consumer.Subscribe("payment", nil)
 
 	if err != nil {
 		log.Panic(err)
@@ -31,19 +31,44 @@ func RunQueue() {
 		ev := consumer.Poll(0)
 		switch e := ev.(type) {
 		case *kafka.Message:
-			//  Message on order[0]@4:
-			fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
-			// controllers.CreateNewOrder(e.Value)
 
-			CreateNewOrder([]byte(e.Value))
+			fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
+
+			// TODO data sent from order to orc might not line up with what we send to pay svc
+
+			// CreateNewPayment([]byte(e.Value))
+			var tempData map[string]interface{}
+
+			err = json.Unmarshal(e.Value, &tempData)
+			if err != nil {
+				log.Panic(err)
+			}
+
+			action := tempData["action"]
+
+			// fmt.Printf("DO THIS ACTION: %s\n", action)
+			switch action {
+			case "CreatePayment":
+				data,err := json.Marshal(tempData["data"])
+				if err != nil {
+					log.Panic(err)
+				}
+				CreateNewPayment([]byte(data))
+			case "MakePayment":
+				data,err := json.Marshal(tempData["data"])
+				if err != nil {
+					log.Panic(err)
+				}
+				MakePayment([]byte(data))
+			}
 
 			res := fmt.Sprintf(
 				`{
-					"send_from": "order",
-					"action": "CreatePayment",
+					"send_from": "payment",
+					"action": "UpdateStock",
 					"data": %s
 				}`, e.Value)
-			
+
 			SendMSG("orchest", []byte(res))
 
 		case kafka.PartitionEOF:

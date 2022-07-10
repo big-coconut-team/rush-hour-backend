@@ -3,12 +3,10 @@ package controllers
 import (
 	// "context"
 	// "net/http"
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-gonic/gin"
 	"encoding/json"
 	// "bytes"
-	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"scalable-final-proj/order-service/utils"
+	// "fmt"
 	"scalable-final-proj/order-service/models"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
@@ -64,15 +62,7 @@ import (
 // 	// defer resp.Body.Close()
 // }
 
-func SendMSG(topic string, data []byte) (error){
-	delivery_chan := make(chan kafka.Event, 10000)
-	err := utils.Getp_client().Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          data},
-		delivery_chan,
-	)
-	return err
-}
+
 
 func CreateNewOrder(input []byte) {
 	var o models.Order
@@ -86,15 +76,3 @@ func CreateNewOrder(input []byte) {
 	}
 }
 
-func DummyOrder(c *gin.Context) {
-	data := fmt.Sprintf(
-		`{
-			"send_from": "controller",
-			"data": {
-				"made_by_id": 3,
-				"prod_list": "[1,6,8,5]"
-			}
-		}`)
-
-	SendMSG("orchest", []byte(data))
-}

@@ -46,6 +46,7 @@ func ListenOrder() {
 			}
 
 			from := tempData["send_from"]
+			action := tempData["action"]
 
 			data, err := json.Marshal(tempData["data"])
 
@@ -56,30 +57,26 @@ func ListenOrder() {
 			switch from {
 
 			case "controller":
+				switch action {
+				case "CreateOrder":
+					SendMSG("order", data)
+				}
 				// go to order
-				SendMSG("order", data)
 			case "order":
-				// go to payment
+				res := fmt.Sprintf(
+					`{
+						"action" : "%s",
+						"data": %s
+					}`, action, data)
+				switch action{
+				case "CreatePayment":
+					SendMSG("payment", []byte(res))
+				case "MakePayment":
+					SendMSG("payment", []byte(res))
+				}
 			case "payment":
 				// go update prod
 			}
-			
-
-			// messageChan := fmt.Sprintf("%s",e.TopicPartition)
-
-			// // order => payment
-			// if strings.Contains(messageChan, "order") {
-			// 	fmt.Println("order")
-			// 	send data to order_queue and trigger create_order?
-			// }
-			// // payment => stock
-			// if strings.Contains(messageChan, "payment") {
-			// 	fmt.Println("payment")
-			// }	
-
-			// if strings.Contains(messageChan, "orchest") {
-			// 	fmt.Println("orchest")
-			// }
 
 		case kafka.PartitionEOF:
 			fmt.Printf("%% Reached %v\n", e)
