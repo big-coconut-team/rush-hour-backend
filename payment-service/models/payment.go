@@ -4,8 +4,9 @@ type Payment struct {
 	// gorm.Model
 	PaymentID 		int 	`gorm:"primary_key;size:11;not null;" json:"payment_id"`
 	MadeByUserID   	int 	`gorm:"size:11;not null;" json:"made_by_id"`
-	Amount			int 	`gorm:"size:11;not null;" json:"amount"`
+	Amount			int 	`gorm:"size:11;not null;" json:"total_price"`
 	Paid			bool	`gorm:"not null;" json:"paid"`
+	ProductDict		string	`gorm:"size:256;not null;" json:"prod_dict"`
 }
 
 func (p *Payment) SavePayment() (*Payment, error) {
