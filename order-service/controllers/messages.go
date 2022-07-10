@@ -25,7 +25,7 @@ func DummyOrder(c *gin.Context) {
 			"data": {
 				"made_by_id": 3,
 				"total_price": 1540,
-				"prod_dict": "{1:2,4:3,7:25}"
+				"prod_dict": {"1":2,"4":3,"7":25},
 			}
 		}`)
 		// total price sent from controllers
