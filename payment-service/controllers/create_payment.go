@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	// "bytes"
 	"log"
-	// "fmt"
+	"fmt"
 	"scalable-final-proj/payment-service/models"
 	_ "github.com/jinzhu/gorm/dialects/mysql"	
 )
@@ -92,6 +92,7 @@ func CreateNewPayment(input []byte) {
 	if err != nil {
 		log.Panic(err)
 	}
+	fmt.Printf("PAYMENT ID: %d\n", p.PaymentID)
 }
 
 func MakePayment(input []byte){
