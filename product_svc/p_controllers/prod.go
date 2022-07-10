@@ -12,9 +12,9 @@ import (
 	// "io"
 	"log"
 	"os"
-
+	"strconv"
 	"github.com/gin-gonic/gin"
-
+	"encoding/json"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
@@ -149,3 +149,25 @@ func GetStockUpdate(c *gin.Context) {
 // 	}
 // 	return false
 // }
+
+func UpdateManyStock(input []byte) {
+	// "{1:2,4:3,7:25}"
+	var tempData map[string]interface{}
+	// fmt.Printf("INPUT:\n%s\n", input)
+	err := json.Unmarshal([]byte(input), &tempData)
+	if err != nil {
+		log.Panic(err)
+	}
+	for key, element := range tempData {
+        // fmt.Println("Key:", key, "=>", "Element:", element)
+		prod := p_models.Product{}
+		intKey, err := strconv.Atoi(key)
+		if err != nil {
+			log.Panic(err)
+		}
+		_,err = prod.UpdateStock(intKey, int(element.(float64)))
+		if err != nil {
+			log.Panic(err)
+		}
+	}
+}

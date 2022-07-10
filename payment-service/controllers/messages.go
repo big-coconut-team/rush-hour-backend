@@ -24,7 +24,7 @@ func DummyCreatePayment(c *gin.Context) {
 			"action" : "CreatePayment",
 			"data": {
 				"made_by_id" : 4,
-				"prod_dict": "{1:2,4:3,7:25}",
+				"prod_dict": {"1":2,"4":3,"7":25},
 				"total_price": 256
 			}
 		}`)
@@ -38,6 +38,7 @@ func DummyMakePayment(c *gin.Context) {
 			"send_from": "order",
 			"action" : "MakePayment",
 			"data": {
+				"prod_dict": {"1":2,"4":3,"7":25},
 				"payment_id": 38
 			}
 		}`)

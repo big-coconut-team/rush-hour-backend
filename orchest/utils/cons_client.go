@@ -57,12 +57,13 @@ func ListenOrder() {
 			switch from {
 
 			case "controller":
+				// go to order
 				switch action {
 				case "CreateOrder":
 					SendMSG("order", data)
 				}
-				// go to order
 			case "order":
+				// go to payment
 				res := fmt.Sprintf(
 					`{
 						"action" : "%s",
@@ -76,6 +77,10 @@ func ListenOrder() {
 				}
 			case "payment":
 				// go update prod
+				switch action {
+				case "UpdateStock":
+					SendMSG("product", data)
+				}
 			}
 
 		case kafka.PartitionEOF:

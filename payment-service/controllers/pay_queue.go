@@ -35,42 +35,48 @@ func RunQueue() {
 			fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
 
 			// TODO data sent from order to orc might not line up with what we send to pay svc
-
-			// CreateNewPayment([]byte(e.Value))
 			var tempData map[string]interface{}
-
 			err = json.Unmarshal(e.Value, &tempData)
 			if err != nil {
 				log.Panic(err)
 			}
-
 			action := tempData["action"]
-
 			// fmt.Printf("DO THIS ACTION: %s\n", action)
+			data,err := json.Marshal(tempData["data"])
+			if err != nil {
+				log.Panic(err)
+			}
 			switch action {
 			case "CreatePayment":
-				data,err := json.Marshal(tempData["data"])
-				if err != nil {
-					log.Panic(err)
-				}
 				CreateNewPayment([]byte(data))
+				res := fmt.Sprintf(
+					`{
+						"send_from": "payment",
+						"action": "WaitForPayment",
+						"data": %s
+					}`, e.Value)
+				SendMSG("orchest", []byte(res))
+
 			case "MakePayment":
-				data,err := json.Marshal(tempData["data"])
+				MakePayment([]byte(data))
+
+				err = json.Unmarshal(data, &tempData)
 				if err != nil {
 					log.Panic(err)
 				}
-				MakePayment([]byte(data))
+				prod_dict, err := json.Marshal(tempData["prod_dict"])
+				if err != nil {
+					log.Panic(err)
+				}
+				// fmt.Printf("DATA HERE: \n%s\n", prod_dict)
+				res := fmt.Sprintf(
+					`{
+						"send_from": "payment",
+						"action": "UpdateStock",
+						"data": %s
+					}`, prod_dict)
+				SendMSG("orchest", []byte(res))
 			}
-
-			res := fmt.Sprintf(
-				`{
-					"send_from": "payment",
-					"action": "UpdateStock",
-					"data": %s
-				}`, e.Value)
-
-			SendMSG("orchest", []byte(res))
-
 		case kafka.PartitionEOF:
 			fmt.Printf("%% Reached %v\n", e)
 		case kafka.Error:
