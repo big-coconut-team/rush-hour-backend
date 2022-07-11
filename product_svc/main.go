@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
 	"product_svc/p_controllers"
 	"product_svc/p_models"
 	"product_svc/p_utils"
-	"log"
-	"github.com/gin-gonic/gin"
+
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {

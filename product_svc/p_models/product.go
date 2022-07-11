@@ -132,6 +132,8 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 			if err != nil {
 				return &Product{}, err
 			}
+		} else {
+			return p, errors.New("error: cannot update stock")
 		}
 	}
 
