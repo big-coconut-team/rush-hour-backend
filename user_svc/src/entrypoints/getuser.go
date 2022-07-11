@@ -19,7 +19,7 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	u, err := models.GetExistingUserByID(input.UserID)
+	u, err := models.GetExistingUserByID(input.UserID, c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
