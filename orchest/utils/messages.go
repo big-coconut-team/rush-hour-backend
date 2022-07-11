@@ -33,12 +33,7 @@ func StartOrder(c *gin.Context) {
 		log.Panic(err)
 	}
 
-	delivery_chan := make(chan kafka.Event, 10000)
-	err = Getp_client().Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          []byte(value)},
-		delivery_chan,
-	)
+	err = SendMSG(topic, []byte(value))
 
 	if err != nil {
 		log.Panic(err)
@@ -71,14 +66,19 @@ func SendMSGPayment(c *gin.Context) {
 		log.Panic(err)
 	}
 
-	delivery_chan := make(chan kafka.Event, 10000)
-	err = Getp_client().Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          []byte(value)},
-		delivery_chan,
-	)
+	err = SendMSG(topic, []byte(value))
 
 	if err != nil {
 		log.Panic(err)
 	}
+}
+
+func SendMSG(topic string, data []byte) (error){
+	delivery_chan := make(chan kafka.Event, 10000)
+	err := Getp_client().Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          data},
+		delivery_chan,
+	)
+	return err
 }
