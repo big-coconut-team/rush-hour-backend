@@ -5,9 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
+	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
@@ -29,7 +30,7 @@ func ConnectDatabase() {
 
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 
-	DB, _ = gorm.Open(Dbdriver, DBURL)
+	DB, _ = gorm.Open(mysql.Open(DBURL), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("Cannot connect to database", Dbdriver)
@@ -38,6 +39,9 @@ func ConnectDatabase() {
 		fmt.Println("We are connected to the database", Dbdriver)
 	}
 
-	DB.DB().SetConnMaxLifetime(0)
+	if err := DB.Use(otelgorm.NewPlugin()); err != nil {
+		log.Fatal(err)
+	}
+
 	DB.AutoMigrate(&User{})
 }

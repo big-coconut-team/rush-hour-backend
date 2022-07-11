@@ -41,9 +41,9 @@ func VerifyPassword(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Username should contain alphanumeric or spaces only."})
 			return
 		}
-		id, err = models.LoginCheck(input.Username, input.Password, false)
+		id, err = models.LoginCheck(input.Username, input.Password, false, c)
 	} else {
-		id, err = models.LoginCheck(input.Email, input.Password, true)
+		id, err = models.LoginCheck(input.Email, input.Password, true, c)
 	}
 
 	if err != nil {

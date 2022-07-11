@@ -33,7 +33,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	_, status := models.GetExistingUser(input.Username, input.Email)
+	_, status := models.GetExistingUser(input.Username, input.Email, c)
 	if status != nil && status != gorm.ErrRecordNotFound {
 		c.JSON(http.StatusBadRequest, gin.H{"error": status.Error()})
 		return
@@ -49,7 +49,7 @@ func Register(c *gin.Context) {
 	u.Email = input.Email
 	u.Coin = 0
 
-	_, err := u.SaveUser()
+	_, err := u.SaveUser(c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

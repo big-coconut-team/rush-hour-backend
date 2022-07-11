@@ -42,7 +42,7 @@ func ChangePassword(c *gin.Context) {
 		u.Email = input.NewEmail
 	}
 
-	_, err := u.UpdateUser()
+	_, err := u.UpdateUser(c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
