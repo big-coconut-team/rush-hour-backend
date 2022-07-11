@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"time"
+	"fmt"
 )
 
 type Product struct {
@@ -114,6 +115,7 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 	if err != nil {
 		panic(err.Error())
 	}
+	fmt.Println("QUERY: %v\n", productdb)
 
 	for productdb.Next() {
 		var stock, num_sold int
@@ -122,7 +124,6 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 		if err != nil {
 			panic(err.Error())
 		}
-
 		if stock >= numItems {
 			var err error
 			newStock := stock - numItems
@@ -133,6 +134,7 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 				return &Product{}, err
 			}
 		} else {
+
 			return p, errors.New("error: cannot update stock")
 		}
 	}

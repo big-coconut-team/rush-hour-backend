@@ -167,6 +167,7 @@ func UpdateManyStock(input []byte) {
 		}
 		_,err = prod.UpdateStock(intKey, int(element.(float64)))
 		if err != nil {
+			fmt.Println(err.Error())
 			log.Panic(err)
 		}
 	}
