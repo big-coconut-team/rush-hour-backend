@@ -34,7 +34,7 @@ func main() {
 	router := gin.Default()
 	protected := router.Group("/api/user")
 	protected.POST("/add_product", p_controllers.AddProduct)
-	protected.POST("/list_product", p_controllers.DownloadPhoto)
+	protected.GET("/list_product", p_controllers.DownloadPhoto)
 	// protected.POST("/update_stock", p_controllers.GetStockUpdate)
 
 	// router.GET("/albums", getAlbums)

@@ -2,9 +2,7 @@ package middlewares
 
 import (
 	"net/http"
-
-	"scalable-final-proj/backend/utils"
-
+	"controller_svc/utils"
 	"github.com/gin-gonic/gin"
 )
 

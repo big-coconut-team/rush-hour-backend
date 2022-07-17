@@ -5,7 +5,7 @@ import (
 
 	"html"
 	"log"
-	"scalable-final-proj/backend/utils"
+	"controller_svc/utils"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"

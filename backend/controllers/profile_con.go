@@ -3,12 +3,12 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"scalable-final-proj/backend/models"
-	"scalable-final-proj/backend/product_svc/p_models"
-	"scalable-final-proj/backend/utils"
+	"controller_svc/models"
+	// "controller_svc/product_svc/p_models"
+	"controller_svc/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	// "github.com/jinzhu/gorm"
 )
 
 func CurrentUser(c *gin.Context) {
