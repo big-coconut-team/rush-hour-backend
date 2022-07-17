@@ -14,7 +14,6 @@ type User struct {
 	Username string `gorm:"size:30;not null;" json:"username"`
 	Password string `gorm:"size:256;not null;" json:"password"`
 	Email    string `gorm:"size:256;not null;" json:"email"`
-	Coin     int    `gorm:"size:10;not null;" json:"coin"`
 }
 
 func VerifyPassword(password, hashedPassword string) error {

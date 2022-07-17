@@ -83,6 +83,8 @@ func Pay(c *gin.Context) {
 				"payment_id": %d
 			}
 		}`, pay_id )
+		// prod_dict from frontend cart
+		
 		// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
