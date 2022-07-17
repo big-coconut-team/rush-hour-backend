@@ -80,11 +80,13 @@ func (u *User) UpdateUser(c *gin.Context) (*User, error) {
 	var err error
 
 	//turn password into hash
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return &User{}, err
+	if len(u.Password) > 0 {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return &User{}, err
+		}
+		u.Password = string(hashedPassword)
 	}
-	u.Password = string(hashedPassword)
 
 	err = DB.WithContext(c.Request.Context()).Model(&User{}).Where("user_id", u.UserID).Updates(&u).Error
 	if err != nil {

@@ -3,9 +3,11 @@ package p_models
 import (
 	// "github.com/jinzhu/gorm"
 	"errors"
+	//"fmt"
 	"strconv"
 	"time"
-	"fmt"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Product struct {
@@ -22,21 +24,21 @@ type Product struct {
 	UserID          int       `gorm:"size:11;not null;" json:"uid"`
 }
 
-func (p *Product) SaveProd() (*Product, error) {
+func (p *Product) SaveProd(c *gin.Context) (*Product, error) {
 
 	var err error
-	err = DB.Create(&p).Error
+	err = DB.WithContext(c.Request.Context()).Create(&p).Error
 	if err != nil {
 		return &Product{}, err
 	}
 	return p, nil
 }
 
-func GetProductByUID(uid uint) (Product, error) {
+func GetProductByUID(uid uint, c *gin.Context) (Product, error) {
 
 	var p Product
 
-	if err := DB.First(&p, uid).Error; err != nil {
+	if err := DB.WithContext(c.Request.Context()).First(&p, uid).Error; err != nil {
 		return p, errors.New("User not found!")
 	}
 
@@ -44,13 +46,14 @@ func GetProductByUID(uid uint) (Product, error) {
 
 }
 
-func GetProdByTime() ([]string, []Product) {
+func GetProdByTime(c *gin.Context) ([]string, []Product) {
 
 	dt := time.Now()
 	var l []string
 	var list []Product
 
-	productdb, err := DB.DB().Query("SELECT * FROM products WHERE start_time <= ? AND end_time >= ?", dt)
+	productdb, err := DB.WithContext(c.Request.Context()).Find("start_time <= ? AND end_time >= ?", dt).Rows()
+	defer productdb.Close()
 
 	if err != nil {
 		panic(err.Error())
@@ -103,19 +106,19 @@ func GetProdByTime() ([]string, []Product) {
 		list = append(list, p)
 
 	}
-	defer DB.Close()
 
 	return l, list
 }
 
-func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
+func (p *Product) UpdateStock(prodID int, numItems int, c *gin.Context) (*Product, error) {
 
-	productdb, err := DB.DB().Query("SELECT stock, num_sold FROM products WHERE prod_id=?", prodID)
+	productdb, err := DB.WithContext(c.Request.Context()).Select("stock", "num_sold").Find("prod_id = ?", prodID).Rows()
+	defer productdb.Close()
 
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println("QUERY: %v\n", productdb)
+	//fmt.Println("QUERY: %v\n", productdb)
 
 	for productdb.Next() {
 		var stock, num_sold int
@@ -128,7 +131,7 @@ func (p *Product) UpdateStock(prodID int, numItems int) (*Product, error) {
 			var err error
 			newStock := stock - numItems
 			newNumSold := num_sold + numItems
-			err = DB.Model(&p).Where("prod_id = ?", prodID).Select("stock", "num_sold").Updates(Product{Stock: newStock, NumSold: newNumSold}).Error
+			err = DB.WithContext(c.Request.Context()).Model(&p).Where("prod_id = ?", prodID).Select("stock", "num_sold").Updates(Product{Stock: newStock, NumSold: newNumSold}).Error
 
 			if err != nil {
 				return &Product{}, err

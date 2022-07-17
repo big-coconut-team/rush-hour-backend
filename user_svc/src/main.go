@@ -67,6 +67,7 @@ func main() {
 	router.POST("/verifypassword", entrypoints.VerifyPassword)
 	router.POST("/updateuser", entrypoints.ChangePassword)
 	router.POST("/getuser", entrypoints.GetUser)
+	router.GET("/profile", entrypoints.CurrentUser)
 
 	router.Run("localhost:8000")
 }
