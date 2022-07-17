@@ -3,6 +3,7 @@ package p_controllers
 import (
 	// "encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"product_svc/p_models"
 	"time"
 
@@ -10,11 +11,12 @@ import (
 	"fmt"
 
 	// "io"
+	"encoding/json"
 	"log"
 	"os"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
-	"encoding/json"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
@@ -59,7 +61,7 @@ func AddProduct(c *gin.Context) {
 	p.NumSold = 0
 	p.UserID = input.UID
 
-	_, err = p.SaveProd()
+	_, err = p.SaveProd(c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -73,7 +75,7 @@ func AddProduct(c *gin.Context) {
 func DownloadPhoto(c *gin.Context) {
 	// dt := time.Now()
 	path, err := os.Getwd()
-	prods_list, prod_details := p_models.GetProdByTime()
+	prods_list, prod_details := p_models.GetProdByTime(c)
 	if err != nil {
 		log.Println(err)
 	}
@@ -127,7 +129,7 @@ func GetStockUpdate(c *gin.Context) {
 
 	p := p_models.Product{}
 
-	_, err = p.UpdateStock(input.ProdID, input.NumItem)
+	_, err = p.UpdateStock(input.ProdID, input.NumItem, c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -151,6 +153,7 @@ func GetStockUpdate(c *gin.Context) {
 // }
 
 func UpdateManyStock(input []byte) {
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// "{1:2,4:3,7:25}"
 	var tempData map[string]interface{}
 	// fmt.Printf("INPUT:\n%s\n", input)
@@ -159,13 +162,13 @@ func UpdateManyStock(input []byte) {
 		log.Panic(err)
 	}
 	for key, element := range tempData {
-        // fmt.Println("Key:", key, "=>", "Element:", element)
+		// fmt.Println("Key:", key, "=>", "Element:", element)
 		prod := p_models.Product{}
 		intKey, err := strconv.Atoi(key)
 		if err != nil {
 			log.Panic(err)
 		}
-		_,err = prod.UpdateStock(intKey, int(element.(float64)))
+		_, err = prod.UpdateStock(intKey, int(element.(float64)), c)
 		if err != nil {
 			fmt.Println(err.Error())
 			log.Panic(err)
