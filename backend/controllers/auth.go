@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"scalable-final-proj/backend/utils"
+	"controller_svc/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,7 +38,7 @@ func UpdateInfo(c *gin.Context) {
 		return
 	}
 
-	payload, errr := json.Marshal(&UpdateInfoOutput{UserID: id, NewPassword: input.NewPassword, NewEmail: input.NewEmail})
+	payload, errr := json.Marshal(&UpdateInfoOutput{UserID: id, NewPassword: input.NewPassword})
 	if errr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

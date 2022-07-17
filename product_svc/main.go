@@ -6,9 +6,9 @@ import (
 	"product_svc/p_controllers"
 	"product_svc/p_models"
 
-	//"product_svc/p_utils"
+	"product_svc/p_utils"
 
-	//"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
@@ -84,7 +84,7 @@ func main() {
 	router.Use(otelgin.Middleware("product"))
 	protected := router.Group("/api/user")
 	protected.POST("/add_product", p_controllers.AddProduct)
-	protected.POST("/list_product", p_controllers.DownloadPhoto)
+	protected.GET("/list_product", p_controllers.DownloadPhoto)
 	// protected.POST("/update_stock", p_controllers.GetStockUpdate)
 
 	// router.GET("/albums", getAlbums)

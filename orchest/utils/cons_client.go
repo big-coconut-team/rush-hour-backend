@@ -60,7 +60,10 @@ func ListenOrder() {
 				// go to order
 				switch action {
 				case "CreateOrder":
-					SendMSG("order", data)
+					err =SendMSG("order", data)
+					if err != nil {
+						log.Panic(err)
+					}
 				}
 			case "order":
 				// go to payment
@@ -71,15 +74,24 @@ func ListenOrder() {
 					}`, action, data)
 				switch action{
 				case "CreatePayment":
-					SendMSG("payment", []byte(res))
+					err = SendMSG("payment", []byte(res))
+					if err != nil {
+						log.Panic(err)
+					}
 				case "MakePayment":
-					SendMSG("payment", []byte(res))
+					err = SendMSG("payment", []byte(res))
+					if err != nil {
+						log.Panic(err)
+					}
 				}
 			case "payment":
 				// go update prod
 				switch action {
 				case "UpdateStock":
-					SendMSG("product", data)
+					err =SendMSG("product", data)
+					if err != nil {
+						log.Panic(err)
+					}
 				}
 			}
 

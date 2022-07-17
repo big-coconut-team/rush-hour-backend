@@ -42,12 +42,6 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	// id, err := utils.ExtractTokenID(c)
-
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	p := p_models.Product{}
 
@@ -139,18 +133,6 @@ func GetStockUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "stock updated"})
 }
 
-// func inTimeSpan(start, end, check time.Time) bool {
-// 	return check.After(start) && check.Before(end)
-// }
-
-// func stringInSlice(a string, list []string) bool {
-// 	for _, b := range list {
-// 		if b == a {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
 
 func UpdateManyStock(input []byte) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())

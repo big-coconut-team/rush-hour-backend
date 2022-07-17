@@ -35,7 +35,7 @@ func RunQueue() {
 			fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
 			// controllers.CreateNewOrder(e.Value)
 
-			CreateNewOrder([]byte(e.Value))
+			CreateOrder([]byte(e.Value))
 
 			res := fmt.Sprintf(
 				`{
