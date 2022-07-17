@@ -1,46 +1,32 @@
 package controllers
 
+
 import (
 	// "context"
-	"net/http"
-	"scalable-final-proj/order-service/models"
+	// "net/http"
+	// "net/http"
+	// "github.com/gin-gonic/gin"
+	"encoding/json"
+	// "bytes"
 
-	"github.com/gin-gonic/gin"
-
-	// "github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	// "github.com/go-redis/redis"
-	// "context"
 	// "bytes"
 	// "fmt"
+	// "github.com/confluentinc/confluent-kafka-go/kafka"
+	// "scalable-final-proj/order-service/utils"
+	"scalable-final-proj/order-service/models"
+	_ "github.com/jinzhu/gorm/dialects/mysql"	
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log"
 )
 
-type CreateOrderInput struct {
-	MadeByUserID int    `json:"made_by_id" binding:"required"`
-	ProdIDs      string `json:"prod_list" binding:"required"`
-}
-
-func CreateOrder(c *gin.Context) {
-
-	var input CreateOrderInput
-
-	err := c.ShouldBindJSON(&input)
+func CreateOrder(input []byte) {
+	var o models.Order
+	err := json.Unmarshal([]byte(input), &o)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		log.Panic(err)
 	}
-
-	o := models.Order{}
-
-	o.MadeByUserID = input.MadeByUserID
-	o.ProductIDs = input.ProdIDs
-
 	_, err = o.SaveOrder()
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		log.Panic(err)
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "order created"})
 }

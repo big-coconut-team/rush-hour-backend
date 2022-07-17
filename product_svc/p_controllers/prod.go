@@ -42,12 +42,6 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	// id, err := utils.ExtractTokenID(c)
-
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	p := p_models.Product{}
 

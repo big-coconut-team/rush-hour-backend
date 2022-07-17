@@ -1,11 +1,10 @@
 package main
 
 import (
-	"net/http"
+	// "net/http"
 
 	"controller_svc/controllers"
 	"controller_svc/middlewares"
-	"controller_svc/models"
 	// "scalable-final-proj/backend/product_svc/p_controllers"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +13,6 @@ import (
 
 func main() {
 
-	models.ConnectDataBase()
 
 	router := gin.Default()
 
@@ -27,8 +25,8 @@ func main() {
 
 	protected.Use(middlewares.JwtAuthMiddleware())
 
-	protected.POST("/changepass", controllers.ChangePassword)
-	protected.GET("/profile", controllers.CurrentUser)
+	// protected.POST("/changepass", controllers.ChangePassword)
+	// protected.GET("/profile", controllers.CurrentUser)
 
 	protected.POST("/add_product", controllers.AddProduct)
 	protected.GET("/list_product", controllers.DownloadPhoto)

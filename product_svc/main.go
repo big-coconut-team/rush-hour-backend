@@ -6,9 +6,9 @@ import (
 	"product_svc/p_controllers"
 	"product_svc/p_models"
 
-	//"product_svc/p_utils"
+	"product_svc/p_utils"
 
-	//"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 

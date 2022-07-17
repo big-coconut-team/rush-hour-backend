@@ -4,8 +4,9 @@ import (
 	"scalable-final-proj/order-service/controllers"
 	"scalable-final-proj/order-service/models"
 	"scalable-final-proj/order-service/utils"
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-gonic/gin"
 	"log"
+	"sync"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
@@ -30,11 +31,14 @@ func main() {
 
 	models.ConnectDatabase()
 
-	router := gin.Default()
+	// router := gin.Default()
 
 	// public := router.Group("/api")
-	private := router.Group("/api")
+	// private := router.Group("/api")
 	// private.POST("/create_order", controllers.CreateOrder) // is called by orchest instead of user
-	private.POST("/test", controllers.DummyOrder)
-	router.Run("localhost:8099")
+	// private.POST("/test", controllers.DummyOrder)
+	// router.Run("localhost:8099")
+	var wg sync.WaitGroup
+	wg.Add(1)
+	wg.Wait()
 }

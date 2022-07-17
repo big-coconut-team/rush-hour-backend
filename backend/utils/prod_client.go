@@ -11,8 +11,6 @@ var p_client *kafka.Producer
 func Initp_client() {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost:9092",
-		// "client.id": "localhost",
-		// "acks": "all"
 	})
 
 	if err != nil {
