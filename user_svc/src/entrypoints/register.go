@@ -7,7 +7,6 @@ import (
 	"user-service/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 )
 
 type RegisterInput struct {
@@ -33,11 +32,11 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	_, status := models.GetExistingUser(input.Username, input.Email, c)
-	if status != nil && status != gorm.ErrRecordNotFound {
-		c.JSON(http.StatusBadRequest, gin.H{"error": status.Error()})
+	r, sqlerr := models.GetExistingUser(input.Username, input.Email, c)
+	if sqlerr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": sqlerr.Error()})
 		return
-	} else if status != gorm.ErrRecordNotFound {
+	} else if len(r.Username) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User/Email already exists!"})
 		return
 	}
