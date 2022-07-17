@@ -51,7 +51,7 @@ func GetExistingUserByID(uid int, c *gin.Context) (User, error) {
 
 	u := User{}
 
-	err = DB.WithContext(c.Request.Context()).Model(&User{}).Where("user_id = ?", uid).First(&u).Error
+	err = DB.WithContext(c.Request.Context()).Model(&User{}).Where("user_id = ?", uid).Limit(1).Find(&u).Error
 
 	return u, err
 }
@@ -61,7 +61,7 @@ func GetExistingUser(username string, email string, c *gin.Context) (User, error
 
 	u := User{}
 
-	err = DB.WithContext(c.Request.Context()).Model(&User{}).Where("LOWER(REPLACE(TRIM(username), \" \", \"\")) = LOWER(REPLACE(TRIM(?), \" \", \"\"))", username).Or("email = ?", email).First(&u).Error
+	err = DB.WithContext(c.Request.Context()).Model(&User{}).Where("LOWER(REPLACE(TRIM(username), \" \", \"\")) = LOWER(REPLACE(TRIM(?), \" \", \"\"))", username).Or("email = ?", email).Limit(1).Find(&u).Error
 
 	return u, err
 }
