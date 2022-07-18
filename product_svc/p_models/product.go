@@ -115,7 +115,7 @@ func GetProdByTime(c *gin.Context) ([]string, []Product) {
 
 func (p *Product) UpdateStock(prodID int, numItems int, c *gin.Context) (*Product, error) {
 
-	productdb, err := DB.WithContext(c.Request.Context()).Select("stock", "num_sold").Find("prod_id = ?", prodID).Rows()
+	productdb, err := DB.WithContext(c.Request.Context()).Raw("SELECT stock, num_sold FROM products WHERE prod_id=?", prodID).Rows()
 	defer productdb.Close()
 
 	if err != nil {
