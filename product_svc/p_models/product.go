@@ -148,6 +148,60 @@ func (p *Product) UpdateStock(prodID int, numItems int, c *gin.Context) (*Produc
 	return p, nil
 }
 
+type Stock struct {
+	Stock   int `gorm:"size:11;not null;" json:"stock"`
+	NumSold int `gorm:"size:11;not null;" json:"num_sold"`
+}
+
+func (p *Product) UpdateManyStocks(prod_dict map[string]int, c *gin.Context) (*Product, error) {
+	var ids []int
+	for key, _ := range prod_dict {
+		id, err := strconv.Atoi(key)
+		if err != nil {
+			log.Panic(err)
+		}
+		ids = append(ids, id)
+	}
+	var stocks []Stock
+
+	// productdb, err := DB.WithContext(c.Request.Context()).Raw("SELECT stock, num_sold FROM products WHERE prod_id=?", prodID).Rows()
+	err := DB.WithContext(c.Request.Context()).Raw("SELECT stock, num_sold FROM products WHERE prod_id IN ?", ids).Scan(&stocks).Error
+
+	// defer productdb.Close()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for _, st := range stocks {
+		stock := st.Stock
+		num_sold := st.NumSold
+		for prodID, numItems := range prod_dict {
+			id, err := strconv.Atoi(prodID)
+			if err != nil {
+				panic(err.Error())
+			}
+			if stock >= numItems {
+				var err error
+				newStock := stock - numItems
+				newNumSold := num_sold + numItems
+				err = DB.WithContext(c.Request.Context()).Model(&p).Where("prod_id = ?", id).Select("stock", "num_sold").Updates(Product{Stock: newStock, NumSold: newNumSold}).Error
+
+				if err != nil {
+					return &Product{}, err
+				}
+			} else {
+
+				return p, errors.New("error: cannot update stock")
+			}
+
+		}
+
+	}
+
+	return p, nil
+}
+
 type Result struct {
 	// gorm.Model
 	ProdID          int `gorm:"primary_key;size:11;not null;" json:"prod_id"`

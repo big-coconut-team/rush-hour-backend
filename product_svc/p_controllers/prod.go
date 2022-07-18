@@ -3,19 +3,20 @@ package p_controllers
 import (
 	// "encoding/json"
 
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"product_svc/p_models"
+	"strconv"
 	"time"
 
 	"context"
 	"fmt"
 
 	// "io"
-	"encoding/json"
+
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -181,4 +182,30 @@ func UpdateManyStock(input []byte) {
 			log.Panic(err)
 		}
 	}
+}
+
+type ManyStockInput struct {
+	ProdDict map[string]int `json:"prod_dict" binding:"required"`
+}
+
+func GetUpdateManyStock(c *gin.Context) {
+
+	var input ManyStockInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	p := p_models.Product{}
+
+	_, err = p.UpdateManyStocks(input.ProdDict, c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Message": "stock updated"})
 }
