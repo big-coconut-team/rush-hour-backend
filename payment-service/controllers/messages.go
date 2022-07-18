@@ -38,7 +38,7 @@ func DummyMakePayment(c *gin.Context) {
 			"send_from": "order",
 			"action" : "MakePayment",
 			"data": {
-				"prod_dict": {"1":2,"4":3,"7":25},
+				"prod_dict": {"1":2,"4":3,"7":5},
 				"payment_id": 38
 			}
 		}`)

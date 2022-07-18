@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"fmt"
 	// "log"
+	"io/ioutil"
+	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"controller_svc/utils"
@@ -21,7 +23,7 @@ func SendMSG(topic string, data []byte) (error){
 }
 
 type PlaceOrderInput struct {
-	ProdIDs			map[string]float64	`json:"prod_dict" binding:"required"`
+	ProdIDs			map[string]int	`json:"prod_dict" binding:"required"`
 }
 
 func PlaceOrder(c *gin.Context) {
@@ -42,17 +44,39 @@ func PlaceOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	data := fmt.Sprintf(
+		`{
+			"prod_dict": %s
+		}`, prod_dict)
+
+	resp, err := http.Post("http://localhost:8001/api/user/calc", "application/json", bytes.NewBuffer([]byte(data)))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}	
+	r_body,err  := ioutil.ReadAll(resp.Body)
+	// buff_r_body := bytes.NewBuffer(r_body)
+
+	var tempData map[string]interface{}
+
+	err = json.Unmarshal(r_body, &tempData)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	total_price := tempData["total"]	
+
+	data = fmt.Sprintf(
 		`{
 			"send_from": "controller",
 			"action" : "CreateOrder",
 			"data": {
 				"made_by_id": %d,
-				"total_price": 1540,
+				"total_price": %d,
 				"prod_dict": %s
 			}
-		}`,id, prod_dict)
+		}`,id, int(total_price.(float64)), prod_dict)
 		// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
@@ -60,6 +84,7 @@ func PlaceOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Printf("TOTAL PRICE: %d\n PROD DICT: %s\n", total_price, prod_dict);
 }
 
 type PayInput struct {
@@ -81,7 +106,7 @@ func Pay(c *gin.Context) {
 			"send_from": "order",
 			"action" : "MakePayment",
 			"data": {
-				"prod_dict": {"1":2,"4":3,"7":25},
+				"prod_dict": {"1":2,"4":3,"7":2},
 				"payment_id": %d
 			}
 		}`, pay_id )

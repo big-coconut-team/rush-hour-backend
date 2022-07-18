@@ -86,6 +86,8 @@ func main() {
 	protected.POST("/add_product", p_controllers.AddProduct)
 	protected.GET("/list_product", p_controllers.DownloadPhoto)
 	// protected.POST("/update_stock", p_controllers.GetStockUpdate)
+	protected.POST("/update_stock", p_controllers.GetUpdateManyStock)
+	protected.POST("/calc", p_controllers.GetTotalPrice)
 
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)
@@ -112,7 +114,6 @@ func main() {
 // 	protected.POST("/add_product", p_controllers.AddProduct)
 // 	protected.POST("/list_product", p_controllers.DownloadPhoto)
 // 	protected.POST("/update_stock", p_controllers.GetStockUpdate)
-// 	protected.POST("/update_many_stock", p_controllers.GetUpdateManyStock)
 
 // 	// router.GET("/albums", getAlbums)
 // 	// router.GET("/albums/:id", getAlbumByID)

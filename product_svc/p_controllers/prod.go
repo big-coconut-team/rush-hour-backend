@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"product_svc/p_models"
-	"strconv"
+	// "strconv"
 	"time"
 
 	"context"
@@ -17,6 +17,7 @@ import (
 
 	"log"
 	"os"
+	"bytes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -161,27 +162,34 @@ func GetTotalPrice(c *gin.Context) {
 }
 
 func UpdateManyStock(input []byte) {
-	c, _ := gin.CreateTestContext(httptest.NewRecorder())
-	// "{1:2,4:3,7:25}"
-	var tempData map[string]interface{}
-	// fmt.Printf("INPUT:\n%s\n", input)
-	err := json.Unmarshal([]byte(input), &tempData)
+
+	var tempData map[string]int
+
+	err := json.Unmarshal(input, &tempData)
+	fmt.Printf("TEMPDATA:\n%v\n", tempData)
 	if err != nil {
 		log.Panic(err)
 	}
-	for key, element := range tempData {
-		// fmt.Println("Key:", key, "=>", "Element:", element)
-		prod := p_models.Product{}
-		intKey, err := strconv.Atoi(key)
-		if err != nil {
-			log.Panic(err)
-		}
-		_, err = prod.UpdateStock(intKey, int(element.(float64)), c)
-		if err != nil {
-			fmt.Println(err.Error())
-			log.Panic(err)
-		}
-	}
+	prod := p_models.Product{}
+	c, _ := gin.CreateTestContext(httptest.NewRecorder())
+	c.Request, _ = http.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte("{}")))
+	_, err = prod.UpdateManyStocks(tempData, c)
+	if err != nil {
+		log.Panic(err)
+	}	
+	// for key, element := range tempData {
+	// 	// fmt.Println("Key:", key, "=>", "Element:", element)
+	// 	prod := p_models.Product{}
+	// 	intKey, err := strconv.Atoi(key)
+	// 	if err != nil {
+	// 		log.Panic(err)
+	// 	}
+	// 	_, err = prod.UpdateStock(intKey, int(element.(float64)), c)
+	// 	if err != nil {
+	// 		fmt.Println(err.Error())
+	// 		log.Panic(err)
+	// 	}
+	// }
 }
 
 type ManyStockInput struct {

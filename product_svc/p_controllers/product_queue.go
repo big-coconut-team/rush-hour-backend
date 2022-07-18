@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	// "strings"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+
 )
 
 func RunQueue() {
@@ -39,10 +39,10 @@ func RunQueue() {
 			res := fmt.Sprintf(
 				`{
 					"send_from": "product",
-					"action": "None",
+					"action": "NotifyUser",
 					"data": %s
 				}`, e.Value)
-
+			
 			SendMSG("orchest", []byte(res))
 
 		case kafka.PartitionEOF:

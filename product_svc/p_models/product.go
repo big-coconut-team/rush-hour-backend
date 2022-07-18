@@ -3,7 +3,7 @@ package p_models
 import (
 	// "github.com/jinzhu/gorm"
 	"errors"
-	"fmt"
+	// "fmt"
 	"log"
 
 	//"fmt"
@@ -194,11 +194,8 @@ func (p *Product) UpdateManyStocks(prod_dict map[string]int, c *gin.Context) (*P
 
 				return p, errors.New("error: cannot update stock")
 			}
-
 		}
-
 	}
-
 	return p, nil
 }
 
@@ -212,13 +209,13 @@ func (p *Product) CalculateTotalPrice(prod_dict map[string]int, c *gin.Context) 
 	var ids []int
 	total := 0
 	for key, _ := range prod_dict {
-		fmt.Printf("key: %s\n", key)
+		// fmt.Printf("key: %s\n", key)
 		id, err := strconv.Atoi(key)
 		if err != nil {
 			log.Panic(err)
 		}
 		ids = append(ids, id)
-		fmt.Printf("ids: %s\n", ids)
+		// fmt.Printf("ids: %s\n", ids)
 	}
 	var result []Result
 
@@ -227,7 +224,7 @@ func (p *Product) CalculateTotalPrice(prod_dict map[string]int, c *gin.Context) 
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%v\n", result)
+	// fmt.Printf("%v\n", result)
 
 	for _, res := range result {
 		prod_id := res.ProdID
@@ -241,7 +238,6 @@ func (p *Product) CalculateTotalPrice(prod_dict map[string]int, c *gin.Context) 
 			if prod_id == id {
 				total = total + (discounted_price * element)
 			}
-
 		}
 
 	}
