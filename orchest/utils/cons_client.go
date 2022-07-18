@@ -93,6 +93,8 @@ func ListenOrder() {
 						log.Panic(err)
 					}
 				}
+			case "product":
+				switch
 			}
 
 		case kafka.PartitionEOF:

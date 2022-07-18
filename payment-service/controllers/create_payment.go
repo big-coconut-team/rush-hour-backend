@@ -13,9 +13,26 @@ import (
 )
 
 
+type InputPayment struct {
+	// gorm.Model
+	MadeByUserID   	int 	`json:"made_by_id" binding:"required"`
+	TotalPrice		int 	`json:"total_price" binding:"required"`
+	Paid			bool	`json:"paid" binding:"required"`
+	ProductDict		map[string]int	`json:"prod_dict" binding:"required"`
+}
+
+
 func CreateNewPayment(input []byte) {
+
+	var ip InputPayment
+	err := json.Unmarshal([]byte(input), &ip)
 	var p models.Payment
-	err := json.Unmarshal([]byte(input), &p)
+
+	p.MadeByUserID = ip.MadeByUserID
+	p.Amount = ip.TotalPrice
+	p.Paid = ip.Paid
+	p.ProductDict = fmt.Sprintf("%v",ip.ProductDict)
+
 	p.Paid = false
 	if err != nil {
 		log.Panic(err)
