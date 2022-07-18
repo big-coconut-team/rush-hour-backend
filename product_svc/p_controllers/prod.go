@@ -2,6 +2,7 @@ package p_controllers
 
 import (
 	// "encoding/json"
+
 	"net/http"
 	"net/http/httptest"
 	"product_svc/p_models"
@@ -41,7 +42,6 @@ func AddProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 
 	p := p_models.Product{}
 
@@ -133,6 +133,31 @@ func GetStockUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "stock updated"})
 }
 
+type TotalPriceInput struct {
+	ProdDict map[string]int `json:"prod_dict" binding:"required"`
+}
+
+func GetTotalPrice(c *gin.Context) {
+
+	var input TotalPriceInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	p := p_models.Product{}
+
+	total, err := p.CalculateTotalPrice(input.ProdDict, c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"total": total})
+}
 
 func UpdateManyStock(input []byte) {
 	c, _ := gin.CreateTestContext(httptest.NewRecorder())

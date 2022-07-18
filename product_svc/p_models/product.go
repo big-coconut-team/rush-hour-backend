@@ -3,6 +3,9 @@ package p_models
 import (
 	// "github.com/jinzhu/gorm"
 	"errors"
+	"fmt"
+	"log"
+
 	//"fmt"
 	"strconv"
 	"time"
@@ -143,4 +146,50 @@ func (p *Product) UpdateStock(prodID int, numItems int, c *gin.Context) (*Produc
 	}
 
 	return p, nil
+}
+
+type Result struct {
+	// gorm.Model
+	ProdID          int `gorm:"primary_key;size:11;not null;" json:"prod_id"`
+	DiscountedPrice int `gorm:"size:10;not null;" json:"discounted_price"`
+}
+
+func (p *Product) CalculateTotalPrice(prod_dict map[string]int, c *gin.Context) (int, error) {
+	var ids []int
+	total := 0
+	for key, _ := range prod_dict {
+		fmt.Printf("key: %s\n", key)
+		id, err := strconv.Atoi(key)
+		if err != nil {
+			log.Panic(err)
+		}
+		ids = append(ids, id)
+		fmt.Printf("ids: %s\n", ids)
+	}
+	var result []Result
+
+	err := DB.WithContext(c.Request.Context()).Raw("SELECT prod_id, discounted_price FROM products WHERE prod_id IN ?", ids).Scan(&result).Error
+
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%v\n", result)
+
+	for _, res := range result {
+		prod_id := res.ProdID
+		discounted_price := res.DiscountedPrice
+
+		for key, element := range prod_dict {
+			id, err := strconv.Atoi(key)
+			if err != nil {
+				panic(err.Error())
+			}
+			if prod_id == id {
+				total = total + (discounted_price * element)
+			}
+
+		}
+
+	}
+	return total, err
 }
