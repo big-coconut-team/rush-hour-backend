@@ -46,7 +46,6 @@ func Register(c *gin.Context) {
 	u.Username = input.Username
 	u.Password = input.Password
 	u.Email = input.Email
-	u.Coin = 0
 
 	_, err := u.SaveUser(c)
 

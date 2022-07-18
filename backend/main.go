@@ -5,8 +5,10 @@ import (
 
 	"controller_svc/controllers"
 	"controller_svc/middlewares"
+	"controller_svc/utils"
+	"log"
 	// "scalable-final-proj/backend/product_svc/p_controllers"
-
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
@@ -57,6 +59,21 @@ func initProvider() func() {
 
 func main() {
 
+	utils.Initp_client()
+
+	go func() {
+		for e := range utils.Getp_client().Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					log.Printf("Failed to deliver message: %v\n", ev.TopicPartition)
+				} else {
+					log.Printf("Successfully produced record to topic %s partition [%d] @ offset %v\n, order created",
+						*ev.TopicPartition.Topic, ev.TopicPartition.Partition, ev.TopicPartition.Offset)
+				}
+			}
+		}
+	}()
 
 	router := gin.Default()
 
@@ -75,7 +92,7 @@ func main() {
 	protected.POST("/add_product", controllers.AddProduct)
 	protected.GET("/list_product", controllers.DownloadPhoto)
 	
-	protected.POST("/place_order", controllers.PlaceOrder)
+	public.POST("/place_order", controllers.PlaceOrder)
 	protected.POST("/make_payment", controllers.Pay)
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)

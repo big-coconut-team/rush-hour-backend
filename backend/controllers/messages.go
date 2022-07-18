@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"fmt"
+	// "log"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"controller_svc/utils"
@@ -49,12 +50,13 @@ func PlaceOrder(c *gin.Context) {
 			"data": {
 				"made_by_id": %d,
 				"total_price": 1540,
-				"prod_dict": %s,
+				"prod_dict": %s
 			}
-		}`,id ,prod_dict)
+		}`,id, prod_dict)
 		// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
+		// log.Panic(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -83,6 +85,8 @@ func Pay(c *gin.Context) {
 				"payment_id": %d
 			}
 		}`, pay_id )
+		// prod_dict from frontend cart
+
 		// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
