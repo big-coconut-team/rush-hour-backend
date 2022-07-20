@@ -1,0 +1,22 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-production
+spec:
+  strategy: production
+  ingress:
+    security: oauth-proxy
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      nodeCount: 3
+      redundancyPolicy: SingleRedundancy
+      storage: 
+        storageClassName: gp2
+        size: 5Gi
+    esIndexCleaner:
+      enabled: true
+      numberOfDays: 7
+      schedule: 55 23 * * *
+    esRollover:
+      schedule: '*/30 * * * *'
