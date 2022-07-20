@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 module controller_svc
-=======
-module scalable-final-proj/backend
->>>>>>> Stashed changes
 
 go 1.18
 
@@ -11,6 +7,7 @@ require github.com/gin-gonic/gin v1.8.1
 require (
 	github.com/confluentinc/confluent-kafka-go v1.9.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
+	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.13.5 // indirect

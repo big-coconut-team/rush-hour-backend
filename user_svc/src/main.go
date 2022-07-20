@@ -6,6 +6,8 @@ import (
 	"user-service/entrypoints"
 	"user-service/models"
 
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
@@ -63,6 +65,12 @@ func main() {
 	router := gin.Default()
 
 	router.Use(otelgin.Middleware("user"))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET, POST"},
+		AllowHeaders:     []string{"Origin, X-Requested-With, content-type, Authorization"},
+		AllowCredentials: true,
+	}))
 	router.POST("/signup", entrypoints.Register)
 	router.POST("/verifypassword", entrypoints.VerifyPassword)
 	router.POST("/updateuser", entrypoints.ChangePassword)

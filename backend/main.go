@@ -3,14 +3,15 @@ package main
 import (
 	// "net/http"
 
+	"context"
 	"controller_svc/controllers"
 	"controller_svc/middlewares"
 	"controller_svc/utils"
 	"log"
+
 	// "scalable-final-proj/backend/product_svc/p_controllers"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
@@ -18,6 +19,8 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+
+	"github.com/gin-contrib/cors"
 )
 
 func initProvider() func() {
@@ -77,11 +80,18 @@ func main() {
 
 	router := gin.Default()
 
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET, POST"},
+		AllowHeaders:     []string{"Origin, X-Requested-With, content-type, Authorization"},
+		AllowCredentials: true,
+	}))
+
 	public := router.Group("/api")
 
 	public.POST("/signup", controllers.Register)
 	public.POST("/login", controllers.Login)
-	
+
 	protected := router.Group("/api/user")
 
 	protected.Use(middlewares.JwtAuthMiddleware())
@@ -91,7 +101,7 @@ func main() {
 
 	protected.POST("/add_product", controllers.AddProduct)
 	protected.GET("/list_product", controllers.DownloadPhoto)
-	
+
 	public.POST("/place_order", controllers.PlaceOrder)
 	protected.POST("/make_payment", controllers.Pay)
 	// router.GET("/albums", getAlbums)
