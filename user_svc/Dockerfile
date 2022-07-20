@@ -8,7 +8,7 @@ RUN apk add build-base
 
 RUN go mod download
 
-RUN go build -o /user_svc
+RUN go build -tags musl  -o /user_svc
 
 FROM alpine:3.16.0
 

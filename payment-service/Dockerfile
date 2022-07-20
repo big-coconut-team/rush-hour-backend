@@ -8,11 +8,11 @@ RUN apk add build-base
 
 RUN go mod download
 
-RUN go build -o /payment_svc
+RUN go build -tags musl  -o /payment_svc
 
 FROM alpine:3.16.0
 
-COPY --from=build /backend /payment_svc
+COPY --from=build /payment_svc /payment_svc
 COPY --from=build /app/.env /.env
 
 EXPOSE 8091

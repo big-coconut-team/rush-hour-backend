@@ -8,11 +8,11 @@ RUN apk add build-base
 
 RUN go mod download
 
-RUN go build -o /order_svc
+RUN go build -tags musl -o /order_svc
 
 FROM alpine:3.16.0
 
-COPY --from=build /backend /order_svc
+COPY --from=build /order_svc /order_svc
 COPY --from=build /app/.env /.env
 
 EXPOSE 8099

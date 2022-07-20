@@ -8,12 +8,11 @@ RUN apk add build-base
 
 RUN go mod download
 
-RUN go build -o /backend_con
+RUN go build -tags musl -o /backend
 
 FROM alpine:3.16.0
 
-COPY --from=build /backend /backend_con
-COPY --from=build /app/.env /.env
+COPY --from=build /backend /backend
 
 EXPOSE 8088
 CMD [ "/backend_con" ]

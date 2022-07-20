@@ -8,12 +8,11 @@ RUN apk add build-base
 
 RUN go mod download
 
-RUN go build -o /orchest_svc
+RUN go build -tags musl -o /orchest_svc
 
 FROM alpine:3.16.0
 
-COPY --from=build /backend /orchest_svc
-COPY --from=build /app/.env /.env
+COPY --from=build /orchest_svc /orchest_svc
 
 EXPOSE 3333
 CMD [ "/orchest_svc" ]

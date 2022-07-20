@@ -14,7 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	// "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
-	"context"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
