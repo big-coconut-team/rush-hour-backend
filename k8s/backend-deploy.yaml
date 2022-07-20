@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rush-hour-backend
+  labels:
+    app: rush-hour-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rush-hour-backend
+  template:
+    metadata:
+      labels:
+        app: rush-hour-backend
+    spec:
+      # initContainers:
+      # - name: wait-for-database
+      #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
+      #   command: ['python', 'manage.py', 'wait_for_database']
+      containers:
+      - name: backend-api
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-backend:latest
+      imagePullSecrets:
+      - name: rush-hour-dockerconfigjson

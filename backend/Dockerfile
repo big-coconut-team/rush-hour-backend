@@ -15,4 +15,4 @@ FROM alpine:3.16.0
 COPY --from=build /backend /backend
 
 EXPOSE 8088
-CMD [ "/backend_con" ]
+CMD [ "/backend" ]

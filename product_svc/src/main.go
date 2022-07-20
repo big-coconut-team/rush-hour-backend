@@ -18,6 +18,8 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+
+	"github.com/gin-contrib/cors"
 )
 
 func initProvider() func() {
@@ -82,6 +84,12 @@ func main() {
 
 	router := gin.Default()
 	router.Use(otelgin.Middleware("product"))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET, POST"},
+		AllowHeaders:     []string{"Origin, X-Requested-With, content-type, Authorization"},
+		AllowCredentials: true,
+	}))
 	protected := router.Group("/api/user")
 	protected.POST("/add_product", p_controllers.AddProduct)
 	protected.GET("/list_product", p_controllers.DownloadPhoto)
@@ -103,6 +111,8 @@ func main() {
 // 	"product_svc/p_models"
 
 // 	"github.com/gin-gonic/gin"
+
+// 	"github.com/gin-contrib/cors"
 // )
 
 // func main() {
@@ -110,10 +120,18 @@ func main() {
 // 	p_models.ConnectDataBase()
 
 // 	router := gin.Default()
+// router.Use(cors.New(cors.Config{
+// 	AllowOrigins:     []string{"*"},
+// 	AllowMethods:     []string{"GET, POST"},
+// 	AllowHeaders:     []string{"Origin, X-Requested-With, content-type, Authorization"},
+// 	AllowCredentials: true,
+// }))
 // 	protected := router.Group("/api/user")
 // 	protected.POST("/add_product", p_controllers.AddProduct)
 // 	protected.POST("/list_product", p_controllers.DownloadPhoto)
 // 	protected.POST("/update_stock", p_controllers.GetStockUpdate)
+// 	protected.POST("/update_many_stock", p_controllers.GetUpdateManyStock)
+// 	protected.POST("/total_price", p_controllers.GetTotalPrice)
 
 // 	// router.GET("/albums", getAlbums)
 // 	// router.GET("/albums/:id", getAlbumByID)
