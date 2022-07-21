@@ -19,6 +19,7 @@ type InputPayment struct {
 	TotalPrice		int 	`json:"total_price" binding:"required"`
 	Paid			bool	`json:"paid" binding:"required"`
 	ProductDict		map[string]int	`json:"prod_dict" binding:"required"`
+	PaymentID		int		`json:"payment_id" binding:"required"`
 }
 
 
@@ -28,6 +29,7 @@ func CreateNewPayment(input []byte) {
 	err := json.Unmarshal([]byte(input), &ip)
 	var p models.Payment
 
+	p.PaymentID = ip.PaymentID
 	p.MadeByUserID = ip.MadeByUserID
 	p.Amount = ip.TotalPrice
 	p.Paid = ip.Paid

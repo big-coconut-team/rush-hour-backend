@@ -55,8 +55,8 @@ spec:
           - name: DB_PASSWORD
             value: "rootpass"
           - name: DB_NAME
-            value: "paymentdb"          
-          - name: KAFKA_ADDRESS
-            value: "kafka-broker"
+            value: "paymentdb"    
+          - name: KAFKA_SERVICE_ADDRESS
+            value: "10.109.2.246"
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

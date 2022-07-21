@@ -9,8 +9,11 @@ import (
 var p_client *kafka.Producer
 
 func Initp_client() {
+
+	kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
+
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:9092",
+		"bootstrap.servers": kafka_add,
 		// "client.id": "localhost",
 		// "acks": "all"
 	})

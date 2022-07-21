@@ -14,35 +14,26 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rush-hour-order
+  name: rush-hour-orchest
   labels:
-    app: rush-hour-order
+    app: rush-hour-orchest
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rush-hour-order
+      app: rush-hour-orchest
   template:
     metadata:
       labels:
-        app: rush-hour-order
+        app: rush-hour-orchest
     spec:
       # initContainers:
       # - name: wait-for-database
       #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
       #   command: ['python', 'manage.py', 'wait_for_database']
       containers:
-      - name: orderdb
-        image: mariadb:latest
-        ports:
-          - containerPort: 3306
-        env:
-          - name: MARIADB_ROOT_PASSWORD
-            value: "rootpass"
-          - name: MARIADB_DATABASE
-            value: "orderdb"
-      - name: order-api
-        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-order_svc:latest
+      - name: orchest-api
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-orchest:latest
         ports:
           - containerPort: 3333  
         env:
@@ -55,7 +46,7 @@ spec:
           - name: DB_PASSWORD
             value: "rootpass"
           - name: DB_NAME
-            value: "orderdb"
+            value: "orchestdb"
           - name: KAFKA_SERVICE_ADDRESS
             value: "10.109.2.246"
       imagePullSecrets:

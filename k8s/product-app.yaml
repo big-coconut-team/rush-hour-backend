@@ -58,7 +58,7 @@ spec:
             value: "productdb"
           - name: MARIADB_ROOT_PASSWORD
             value: "rootpass"
-          - name: KAFKA_ADDRESS
-            value: "kafka-broker"
+          - name: KAFKA_SERVICE_ADDRESS
+            value: "10.109.2.246"
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

@@ -23,7 +23,7 @@ type InputOrder struct {
 	TotalPrice		int		`json:"total_price" binding:"required"`
 }
 
-func CreateOrder(input []byte) {
+func CreateOrder(input []byte) (int) {
 	var io InputOrder
 	err := json.Unmarshal(input, &io)
 	
@@ -39,4 +39,5 @@ func CreateOrder(input []byte) {
 	if err != nil {
 		log.Panic(err)
 	}
+	return o.OrderID
 }

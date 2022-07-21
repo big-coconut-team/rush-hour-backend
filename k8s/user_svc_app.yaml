@@ -55,8 +55,8 @@ spec:
           value: "pass"
         - name: DB_NAME
           value: "userdb"
-        - name: KAFKA_ADDRESS
-          value: "kafka-broker"
+        - name: KAFKA_SERVICE_ADDRESS
+          value: "10.109.2.246"
         ports:
         - containerPort: 8000
         # name: rush-hour-user

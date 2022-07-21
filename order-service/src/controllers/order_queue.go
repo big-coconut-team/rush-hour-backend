@@ -5,13 +5,17 @@ import (
 	"log"
 	"os"
 	// "strings"
+	"encoding/json"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
 )
 
 func RunQueue() {
+
+	kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
+
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":               "localhost:9092",
+		"bootstrap.servers":               kafka_add,
 		"group.id":                        "order-group",
 		"go.application.rebalance.enable": true,
 	})
@@ -35,14 +39,26 @@ func RunQueue() {
 			fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
 			// controllers.CreateNewOrder(e.Value)
 
-			CreateOrder([]byte(e.Value))
+			oid := CreateOrder([]byte(e.Value))
+
+			var tempData map[string]interface{}
+
+			err = json.Unmarshal(e.Value, tempData)
+			if err != nil {
+				log.Panic(err)
+			}
+			tempData["payment_id"] = oid
+			newData, err := json.Marshal(tempData)
+			if err != nil {
+				log.Panic(err)
+			}
 
 			res := fmt.Sprintf(
 				`{
 					"send_from": "order",
 					"action": "CreatePayment",
-					"data": %s
-				}`, e.Value)
+					"data": %s,
+				}`, newData)
 			
 			SendMSG("orchest", []byte(res))
 
