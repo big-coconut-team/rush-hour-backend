@@ -41,6 +41,17 @@ spec:
           value: pass       
       - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
         name: user_svc
+        env:
+        - name: DB_HOST
+          value: 127.0.0.1
+        - name: DB_PORT
+          value: 3306
+        - name: DB_USER
+          value: root
+        - name: DB_PASSWORD
+          value: rootpass
+        - name: DB_NAME
+          value: users
         ports:
           - containerPort: 8000
           name: user_svc
