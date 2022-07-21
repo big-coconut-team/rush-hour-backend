@@ -37,7 +37,7 @@ func AddProduct(c *gin.Context) {
 
 	// fmt.Printf("add product: %s",data)
 
-	resp, err := http.Post("http://localhost:8001/api/user/add_product", "application/json", responseBody)
+	resp, err := http.Post("http://rush-hour-product:8001/api/user/add_product", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -50,7 +50,7 @@ func AddProduct(c *gin.Context) {
 }
 
 func DownloadPhoto(c *gin.Context){
-	resp, err := http.Get("http://localhost:8001/api/user/list_product")
+	resp, err := http.Get("http://rush-hour-product:8001/api/user/list_product")
 	//Handle Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

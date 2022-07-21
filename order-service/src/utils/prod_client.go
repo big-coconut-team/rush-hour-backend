@@ -22,7 +22,7 @@ func Initp_client() {
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		// "bootstrap.servers": kafka_add,
-		"bootstrap.servers": "kafka-service:9092",
+		"bootstrap.servers": "kafka-broker:9092",
 		// "client.id": "localhost",
 		// "acks": "all"
 	})
