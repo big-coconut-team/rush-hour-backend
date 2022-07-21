@@ -2,7 +2,8 @@ package p_utils
 
 import (
 	"log"
-
+	"fmt"
+	"os"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
