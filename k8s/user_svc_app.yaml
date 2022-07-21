@@ -1,59 +1,57 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user_svc
+  name: user-svc
   labels:
-    app: user_svc
+    app: user-svc
 spec:
   ports:
   - port: 80
     targetPort: 8000
   selector:
-    app: user_svc
+    app: user-svc
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: status-projector-deployment
+  name: user-svc
 spec:
   selector:
     matchLabels:
-      app: user_svc
+      app: user-svc
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: user_svc
+        app: user-svc
     spec:
       containers:
       - image: mariadb:10.8
         name: mariadb
         ports:
         - containerPort: 3306
-          name: user_db
+          name: user-db
         env:
         - name: MYSQL_DATABASE
           value: users
-        - name: MYSQL_USER
-          value: admin
-        - name: MYSQL_PASSWORD
-          value: pass       
+        - name: MYSQL_ROOT_PASSWORD
+          value: pass 
       - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
-        name: user_svc
+        name: user-svc
         env:
         - name: DB_HOST
-          value: 127.0.0.1
+          value: "localhost"
         - name: DB_PORT
-          value: 3306
+          value: "3306"
         - name: DB_USER
-          value: root
+          value: "root"
         - name: DB_PASSWORD
-          value: rootpass
+          value: "pass"
         - name: DB_NAME
-          value: users
+          value: "users"
         ports:
           - containerPort: 8000
-          name: user_svc
+            name: user-svc
       imagePullSecrets:
       - name: secret
