@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"controller_svc/utils"
-	"fmt"
 )
 
 func AddProduct(c *gin.Context) {
