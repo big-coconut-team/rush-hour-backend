@@ -9,7 +9,7 @@ spec:
   ports:
   - name:  http
     port:  80
-    targetPort:  8088
+    targetPort: 8088
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,6 +35,6 @@ spec:
       - name: backend-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-backend:latest
         ports:
-          - containerPort:         
+          - containerPort: 8088 
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

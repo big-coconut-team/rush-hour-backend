@@ -1,37 +1,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user_svc
+  name: rush-hour-user
   labels:
-    app: user_svc
+    app: rush-hour-user
 spec:
   ports:
   - port: 80
     targetPort: 8000
   selector:
-    app: user_svc
+    app: rush-hour-user
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: status-projector-deployment
+  name: rush-hour-user
 spec:
   selector:
     matchLabels:
-      app: user_svc
+      app: rush-hour-user
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: user_svc
+        app: rush-hour-user
     spec:
       containers:
       - image: mariadb:10.8
         name: mariadb
         ports:
         - containerPort: 3306
-          name: user_db
+          name: user-db
         env:
         - name: MYSQL_DATABASE
           value: users
@@ -40,20 +40,10 @@ spec:
         - name: MYSQL_PASSWORD
           value: pass       
       - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
-        name: user_svc
-        env:
-        - name: DB_HOST
-          value: 127.0.0.1
-        - name: DB_PORT
-          value: 3306
-        - name: DB_USER
-          value: root
-        - name: DB_PASSWORD
-          value: rootpass
-        - name: DB_NAME
-          value: users
+        name: rush-hour-user
+
         ports:
-          - containerPort: 8000
-          name: user_svc
+        - containerPort: 8000
+        # name: rush-hour-user
       imagePullSecrets:
-      - name: secret
+      - name: rush-hour-dockerconfigjson

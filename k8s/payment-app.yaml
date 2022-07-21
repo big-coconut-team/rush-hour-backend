@@ -7,9 +7,9 @@ spec:
     app: rush-hour-payment
   type:  ClusterIP
   ports:
-  - name:  http
-    port:  80
-    targetPort:  3333
+  - name: http
+    port: 80
+    targetPort: 8091
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -18,7 +18,7 @@ metadata:
   labels:
     app: rush-hour-payment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-payment
@@ -37,19 +37,27 @@ spec:
         ports:
           - containerPort: 3306
         env:
-          - name: DB_HOST
-            value: 127.0.0.1
-          - name: DB_PORT
-            value: 3306
-          - name: DB_USER
-            value: root
-          - name: DB_PASSWORD
-            value: rootpass
-          - name: DB_NAME
-            value: payment_db
+          - name: MARIADB_ROOT_PASSWORD
+            value: "rootpass"
+          - name: MARIADB_DATABASE
+            value: scalabruhdb
+          - name: MARIADB_ROOT_PASSWORD
       - name: payment-api
-        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-backend:latest
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-payment_svc:latest
         ports:
-          - containerPort:         
+          - containerPort: 8091
+        env:
+          - name: DB_HOST
+            value: "127.0.0.1"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "rootpass"
+          - name: DB_NAME
+            value: "payment_db"          
+
+            
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

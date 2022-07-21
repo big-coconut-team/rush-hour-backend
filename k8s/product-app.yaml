@@ -1,0 +1,57 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rush-hour-product
+spec:
+  selector:
+    app: rush-hour-product
+  type:  ClusterIP
+  ports:
+  - name:  http
+    port:  80
+    targetPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rush-hour-product
+  labels:
+    app: rush-hour-product
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rush-hour-product
+  template:
+    metadata:
+      labels:
+        app: rush-hour-product
+    spec:
+      # initContainers:
+      # - name: wait-for-database
+      #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
+      #   command: ['python', 'manage.py', 'wait_for_database']
+      containers:
+      - name: product
+        image: mariadb:latest
+        ports:
+          - containerPort: 3306
+        env:
+          - name: DB_HOST
+            value: "127.0.0.1"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "rootpass"
+          - name: DB_NAME
+            value: "product_db"
+          - name: MARIADB_ROOT_PASSWORD
+            value: "rootpass"
+      - name: product-api
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-product_svc:latest
+        ports:
+          - containerPort: 8001     
+      imagePullSecrets:
+      - name: rush-hour-dockerconfigjson
