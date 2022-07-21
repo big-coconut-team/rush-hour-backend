@@ -11,7 +11,7 @@ import (
 
 func RunQueue() {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":               "localhost:9092",
+		"bootstrap.servers":               "10.109.2.246:9092",
 		"group.id":                        "order-group",
 		"go.application.rebalance.enable": true,
 	})

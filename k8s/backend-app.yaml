@@ -20,7 +20,7 @@ metadata:
   labels:
     app: rush-hour-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-backend
