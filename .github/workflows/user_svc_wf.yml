@@ -1,4 +1,4 @@
-name: Build Backend CI
+name: Build user_svc CI
 
 on:
   workflow_dispatch:
