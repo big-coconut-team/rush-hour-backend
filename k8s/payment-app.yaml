@@ -32,7 +32,7 @@ spec:
       #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
       #   command: ['python', 'manage.py', 'wait_for_database']
       containers:
-      - name: payment
+      - name: paymentdb
         image: mariadb:latest
         ports:
           - containerPort: 3306
@@ -40,8 +40,9 @@ spec:
           - name: MARIADB_ROOT_PASSWORD
             value: "rootpass"
           - name: MARIADB_DATABASE
-            value: scalabruhdb
+            value: "paymentdb"
           - name: MARIADB_ROOT_PASSWORD
+            value: "rootpass"      
       - name: payment-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-payment_svc:latest
         ports:
@@ -56,8 +57,8 @@ spec:
           - name: DB_PASSWORD
             value: "rootpass"
           - name: DB_NAME
-            value: "payment_db"          
-
-            
+            value: "paymentdb"          
+          - name: KAFKA_ADDRESS
+            value: "kafka-broker"
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

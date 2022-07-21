@@ -28,17 +28,17 @@ spec:
     spec:
       containers:
       - image: mariadb:10.8
-        name: mariadb
+        name: userdb
         ports:
         - containerPort: 3306
           name: user-db
         env:
         - name: MYSQL_DATABASE
-          value: users
+          value: "userdb"
         - name: MYSQL_USER
-          value: admin
+          value: "admin"
         - name: MYSQL_PASSWORD
-          value: pass       
+          value: "pass"       
       - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
         name: rush-hour-user
         env:
@@ -51,9 +51,11 @@ spec:
         - name: DB_PASSWORD
           value: "rootpass"
         - name: DB_NAME
-          value: "user_db"
+          value: "userdb"
         - name: MARIADB_ROOT_PASSWORD
-          value: "rootpass"
+          value: "pass"
+        - name: KAFKA_ADDRESS
+          value: "kafka-broker"
         ports:
         - containerPort: 8000
         # name: rush-hour-user
