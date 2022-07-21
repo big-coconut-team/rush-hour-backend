@@ -9,7 +9,7 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: 3333
+    targetPort: 8099
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,7 +46,7 @@ spec:
       - name: order-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-order_svc:latest
         ports:
-          - containerPort: 3333  
+          - containerPort: 8099  
         env:
           - name: DB_HOST
             value: "127.0.0.1"

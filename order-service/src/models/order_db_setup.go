@@ -8,12 +8,19 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	// "scalable-final-proj/order-service"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
+
+	err := godotenv.Load()
+
+    if err != nil {
+        log.Fatalf("Error loading .env file")
+    }
+
 	Dbdriver := "mysql"
 	DbHost := os.Getenv("DB_HOST")
 	DbUser := os.Getenv("DB_USER")

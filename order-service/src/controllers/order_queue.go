@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"log"
-	"os"
+	// "os"
 	// "strings"
 	"encoding/json"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -12,10 +12,11 @@ import (
 
 func RunQueue() {
 
-	kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
+	// kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":               kafka_add,
+		// "bootstrap.servers":               kafka_add,
+		"bootstrap.servers":               "localhost:9092",
 		"group.id":                        "order-group",
 		"go.application.rebalance.enable": true,
 	})
