@@ -104,7 +104,7 @@ func main() {
 	protected.POST("/add_product", controllers.AddProduct)
 	protected.GET("/list_product", controllers.DownloadPhoto)
 
-	public.POST("/place_order", controllers.PlaceOrder)
+	protected.POST("/place_order", controllers.PlaceOrder)
 	protected.POST("/make_payment", controllers.Pay)
 	// router.GET("/albums", getAlbums)
 	// router.GET("/albums/:id", getAlbumByID)

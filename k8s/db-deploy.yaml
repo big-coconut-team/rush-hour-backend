@@ -25,10 +25,10 @@ spec: # specification for deployment resource
               secretKeyRef:
                 name: mariadb-secret
                 key: mariadb-root-password
-        volumeMounts:
-        - name: mariadb-persistent-storage
-          mountPath: /var/lib/mariadb
-      volumes:
-      - name: mariadb-persistent-storage
-        persistentVolumeClaim:
-          claimName: p1-pv-claim
+      #   volumeMounts:
+      #   - name: mariadb-persistent-storage
+      #     mountPath: /var/lib/mariadb
+      # volumes:
+      # - name: mariadb-persistent-storage
+      #   persistentVolumeClaim:
+      #     claimName: p1-pv-claim
