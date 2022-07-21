@@ -1,10 +1,10 @@
-name: Build Backend CI
+name: Build user_svc CI
 
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    paths: [ backend/** ]
+    paths: [ user_svc/** ]
 
 env:
   REGISTRY: ghcr.io
@@ -29,11 +29,11 @@ jobs:
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Build the Docker image
       run: |
-        cd backend && \
+        cd user_svc && \
         docker build . --file Dockerfile \
-        --tag ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-backend:${{ steps.vars.outputs.sha_short }} \
-        --tag ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-backend:latest
+        --tag ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-user_svc:${{ steps.vars.outputs.sha_short }} \
+        --tag ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-user_svc:latest
     - name: Publish the images
       run: | 
-        docker push ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-backend:${{ steps.vars.outputs.sha_short }}
-        docker push ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-backend:latest
+        docker push ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-user_svc:${{ steps.vars.outputs.sha_short }}
+        docker push ghcr.io/${{ env.BASE_IMG_NAME }}/pfinal-user_svc:latest
