@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -15,7 +15,6 @@ var DB *gorm.DB
 
 func ConnectDataBase() {
 
-	err := godotenv.Load(".env")
 
 	if err != nil {
 		log.Fatalf("Error loading .env file")

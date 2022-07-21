@@ -6,7 +6,7 @@ metadata:
     app: user_svc
 spec:
   ports:
-  - port: 8000
+  - port: 80
     targetPort: 8000
   selector:
     app: user_svc
