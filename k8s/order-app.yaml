@@ -18,7 +18,7 @@ metadata:
   labels:
     app: rush-hour-order
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-order
@@ -41,8 +41,6 @@ spec:
             value: "rootpass"
           - name: MARIADB_DATABASE
             value: "orderdb"
-          - name: MARIADB_ROOT_PASSWORD
-            value: "rootpass"
       - name: order-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-order_svc:latest
         ports:

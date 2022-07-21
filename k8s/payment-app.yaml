@@ -41,8 +41,6 @@ spec:
             value: "rootpass"
           - name: MARIADB_DATABASE
             value: "paymentdb"
-          - name: MARIADB_ROOT_PASSWORD
-            value: "rootpass"      
       - name: payment-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-payment_svc:latest
         ports:

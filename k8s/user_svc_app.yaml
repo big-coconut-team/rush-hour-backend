@@ -16,6 +16,7 @@ kind: Deployment
 metadata:
   name: rush-hour-user
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-user
@@ -39,6 +40,8 @@ spec:
           value: "admin"
         - name: MYSQL_PASSWORD
           value: "pass"       
+        - name: MARIADB_ROOT_PASSWORD
+          value: "pass"
       - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
         name: rush-hour-user
         env:
@@ -47,13 +50,11 @@ spec:
         - name: DB_PORT
           value: "3306"
         - name: DB_USER
-          value: "root"
+          value: "admin"
         - name: DB_PASSWORD
-          value: "rootpass"
+          value: "pass"
         - name: DB_NAME
           value: "userdb"
-        - name: MARIADB_ROOT_PASSWORD
-          value: "pass"
         - name: KAFKA_ADDRESS
           value: "kafka-broker"
         ports:

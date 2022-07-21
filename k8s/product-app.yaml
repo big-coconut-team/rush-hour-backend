@@ -18,7 +18,7 @@ metadata:
   labels:
     app: rush-hour-product
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-product
@@ -40,9 +40,7 @@ spec:
           - name: MARIADB_ROOT_PASSWORD
             value: "rootpass"
           - name: MARIADB_DATABASE
-            value: "products"
-          - name: MARIADB_ROOT_PASSWORD
-            value: "rootpass"  
+            value: "productdb"
       - name: product-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-product_svc:latest
         ports:
