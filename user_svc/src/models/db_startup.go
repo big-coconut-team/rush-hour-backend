@@ -25,7 +25,7 @@ func ConnectDatabase() {
 
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 
-	DB, _ = gorm.Open(mysql.Open(DBURL), &gorm.Config{})
+	DB, err := gorm.Open(mysql.Open(DBURL), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("Cannot connect to database", Dbdriver)

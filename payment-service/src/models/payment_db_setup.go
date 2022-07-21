@@ -25,7 +25,7 @@ func ConnectDatabase() {
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 	// DBURL := "root:rootpass@tcp(0.0.0.0:3307)/scalabruh_final_db?charset=utf8&parseTime=True&loc=Local"
 
-	DB, _ = gorm.Open(Dbdriver, DBURL)
+	DB, err := gorm.Open(Dbdriver, DBURL)
 
 	if err != nil {
 		fmt.Println("Cannot connect to database ", Dbdriver)
