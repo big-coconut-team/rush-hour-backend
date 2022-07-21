@@ -13,7 +13,7 @@ func Initp_client() {
 	
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "10.109.2.246:9092",
+		"bootstrap.servers": "kafka-service:9092",
 	})
 
 	if err != nil {
