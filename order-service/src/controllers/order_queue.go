@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"log"
-	// "os"
+	"os"
 	// "strings"
 	"encoding/json"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
