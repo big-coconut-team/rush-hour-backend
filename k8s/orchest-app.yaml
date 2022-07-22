@@ -48,6 +48,6 @@ spec:
           - name: DB_NAME
             value: "orchestdb"
           - name: KAFKA_SERVICE_ADDRESS
-            value: "kafka-broker.kafka"
+            value: "kafka-service"
       imagePullSecrets:
       - name: secret
