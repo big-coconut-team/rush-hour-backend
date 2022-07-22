@@ -48,6 +48,6 @@ spec:
           - name: DB_NAME
             value: "orchestdb"
           - name: KAFKA_SERVICE_ADDRESS
-            value: "kafka-broker"
+            value: "kafka-broker.kafka"
       imagePullSecrets:
-      - name: rush-hour-dockerconfigjson
+      - name: secret
