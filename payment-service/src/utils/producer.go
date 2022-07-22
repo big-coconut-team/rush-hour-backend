@@ -2,6 +2,8 @@ package utils
 
 import (
 	"log"
+	"fmt"
+	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -10,10 +12,10 @@ var p_client *kafka.Producer
 
 func Initp_client() {
 
-	
+	kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))	
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "kafka-broker:9092",
+		"bootstrap.servers": kafka_add,
 	})
 
 	if err != nil {

@@ -2,8 +2,8 @@ package utils
 
 import (
 	"log"
-	// "os"
-	// "fmt"
+	"os"
+	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	// "github.com/joho/godotenv"
 )
@@ -18,11 +18,11 @@ func Initp_client() {
     //     log.Fatalf("Error loading .env file")
     // }
 
-	// kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
+	kafka_add := fmt.Sprintf("%s:9092", os.Getenv("KAFKA_SERVICE_ADDRESS"))
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		// "bootstrap.servers": kafka_add,
-		"bootstrap.servers": "kafka-broker:9092",
+		"bootstrap.servers": kafka_add,
+		// "bootstrap.servers": "kafka-broker:9092",
 		// "client.id": "localhost",
 		// "acks": "all"
 	})

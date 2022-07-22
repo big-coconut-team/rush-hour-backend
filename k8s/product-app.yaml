@@ -61,6 +61,6 @@ spec:
           - name: MARIADB_ROOT_PASSWORD
             value: "rootpass"
           - name: KAFKA_SERVICE_ADDRESS
-            value: "10.109.2.246"
+            value: "kafka-service"
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson
