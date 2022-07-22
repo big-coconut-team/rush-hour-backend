@@ -1,36 +1,37 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"bytes"
-	"net/http"
-	"io/ioutil"
-	"encoding/json"
 	"controller_svc/utils"
-	"fmt"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	// "fmt"
 )
 
 func AddProduct(c *gin.Context) {
-	data,err := ioutil.ReadAll(c.Request.Body)
+	data, err := ioutil.ReadAll(c.Request.Body)
 
 	var tempData map[string]interface{}
 
 	err = json.Unmarshal(data, &tempData)
-	
-	id, err := utils.ExtractTokenID(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}	
 
-	tempData["uid"] = id
-	data,err = json.Marshal(tempData)
+	id, err := utils.ExtractTokenID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	responseBody := bytes.NewBuffer(data)	
+	tempData["uid"] = id
+	data, err = json.Marshal(tempData)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	responseBody := bytes.NewBuffer(data)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -45,12 +46,12 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
-	defer resp.Body.Close()	
+	defer resp.Body.Close()
 
 	c.JSON(http.StatusOK, gin.H{"message": "Success adding product"})
 }
 
-func DownloadPhoto(c *gin.Context){
+func DownloadPhoto(c *gin.Context) {
 	resp, err := http.Get("http://localhost:8001/api/user/list_product")
 	//Handle Error
 	if err != nil {
@@ -62,7 +63,7 @@ func DownloadPhoto(c *gin.Context){
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-   	}
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": body})
 }

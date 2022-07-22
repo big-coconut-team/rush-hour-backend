@@ -1,18 +1,22 @@
 package controllers
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
+
 	// "log"
-	"io/ioutil"
 	"bytes"
-	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"controller_svc/utils"
+	"encoding/json"
+	"io/ioutil"
+
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/gin-gonic/gin"
 )
 
-func SendMSG(topic string, data []byte) (error){
+var orderid int
+
+func SendMSG(topic string, data []byte) error {
 	delivery_chan := make(chan kafka.Event, 10000)
 	err := utils.Getp_client().Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
@@ -23,17 +27,17 @@ func SendMSG(topic string, data []byte) (error){
 }
 
 type PlaceOrderInput struct {
-	ProdIDs			map[string]int	`json:"prod_dict" binding:"required"`
+	ProdIDs map[string]int `json:"prod_dict" binding:"required"`
 }
 
 func PlaceOrder(c *gin.Context) {
 	var input PlaceOrderInput
-    
+
 	err := c.ShouldBindJSON(&input)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	id, err := utils.ExtractTokenID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -53,8 +57,8 @@ func PlaceOrder(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}	
-	r_body,err  := ioutil.ReadAll(resp.Body)
+	}
+	r_body, err := ioutil.ReadAll(resp.Body)
 	// buff_r_body := bytes.NewBuffer(r_body)
 
 	var tempData map[string]interface{}
@@ -65,7 +69,7 @@ func PlaceOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	total_price := tempData["total"]	
+	total_price := tempData["total"]
 
 	data = fmt.Sprintf(
 		`{
@@ -76,29 +80,35 @@ func PlaceOrder(c *gin.Context) {
 				"total_price": %d,
 				"prod_dict": %s
 			}
-		}`,id, int(total_price.(float64)), prod_dict)
-		// total price sent from controllers
+		}`, id, int(total_price.(float64)), prod_dict)
+	// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
 		// log.Panic(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("TOTAL PRICE: %d\n PROD DICT: %s\n", total_price, prod_dict);
+	fmt.Printf("TOTAL PRICE: %d\n PROD DICT: %s\n", total_price, prod_dict)
 }
 
 type PayInput struct {
-	PaymentID 	int 	`json:"payment_id" binding:"required"`
+	ProdIDs   map[string]int `json:"prod_dict" binding:"required"`
+	PaymentID int            `json:"payment_id" binding:"required"`
 }
 
 func Pay(c *gin.Context) {
 	var input PayInput
-    
+
 	err := c.ShouldBindJSON(&input)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	prod_dict, err := json.Marshal(input.ProdIDs)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	pay_id := input.PaymentID
 
 	data := fmt.Sprintf(
@@ -106,13 +116,14 @@ func Pay(c *gin.Context) {
 			"send_from": "order",
 			"action" : "MakePayment",
 			"data": {
-				"prod_dict": {"1":2,"4":3,"7":2},
+				"prod_dict": %s,
 				"payment_id": %d
 			}
-		}`, pay_id )
-		// prod_dict from frontend cart
+		}`, prod_dict, pay_id)
+	orderid = pay_id
+	// prod_dict from frontend cart
 
-		// total price sent from controllers
+	// total price sent from controllers
 	err = SendMSG("orchest", []byte(data))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -120,3 +131,29 @@ func Pay(c *gin.Context) {
 	}
 }
 
+func GetOrderId(c *gin.Context) {
+	resp, err := http.Get("http://localhost:8099/api/get_oid")
+	//Handle Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var tempData map[string]interface{}
+
+	err = json.Unmarshal(body, &tempData)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	oid := tempData["order_id"]
+
+	c.JSON(http.StatusOK, gin.H{"order_id": oid})
+}
