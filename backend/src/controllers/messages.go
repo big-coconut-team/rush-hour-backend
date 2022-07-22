@@ -49,7 +49,7 @@ func PlaceOrder(c *gin.Context) {
 			"prod_dict": %s
 		}`, prod_dict)
 
-	resp, err := http.Post("http://localhost:8001/api/user/calc", "application/json", bytes.NewBuffer([]byte(data)))
+	resp, err := http.Post("http://rush-hour-product:8001/api/user/calc", "application/json", bytes.NewBuffer([]byte(data)))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

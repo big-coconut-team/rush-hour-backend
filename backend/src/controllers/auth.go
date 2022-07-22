@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var USER_SERVICE_ADDR = "localhost" // change this to localhost if testing locally
+var USER_SERVICE_ADDR = "rush-hour-user" // change this to localhost if testing locally
 var USER_SERVICE_PORT = "8000"
 
 type UpdateInfoInput struct {

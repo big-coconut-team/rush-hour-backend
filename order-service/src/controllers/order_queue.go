@@ -16,7 +16,7 @@ func RunQueue() {
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		// "bootstrap.servers":               kafka_add,
-		"bootstrap.servers":               "10.109.2.246:9092",
+		"bootstrap.servers":               "kafka-broker:9092",
 		"group.id":                        "order-group",
 		"go.application.rebalance.enable": true,
 	})
