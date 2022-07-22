@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rush-hour-user
+  labels:
+    app: rush-hour-user
+spec:
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: rush-hour-user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    sidecar.jaegertracing.io/inject: "jaeger-production"
+  name: rush-hour-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rush-hour-user
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rush-hour-user
+    spec:
+      containers:
+      - image: mariadb:10.8
+        name: userdb
+        ports:
+        - containerPort: 3306
+          name: user-db
+        env:
+        - name: MYSQL_DATABASE
+          value: "userdb"
+        - name: MYSQL_USER
+          value: "admin"
+        - name: MYSQL_PASSWORD
+          value: "pass"       
+        - name: MARIADB_ROOT_PASSWORD
+          value: "pass"
+      - image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-user_svc:latest
+        name: rush-hour-user
+        env:
+        - name: DB_HOST
+          value: "127.0.0.1"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "pass"
+        - name: DB_NAME
+          value: "userdb"
+        - name: KAFKA_SERVICE_ADDRESS
+          value: "kafka-service"
+        ports:
+        - containerPort: 8000
+        # name: rush-hour-user
+      imagePullSecrets:
+      - name: rush-hour-dockerconfigjson

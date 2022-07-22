@@ -1,0 +1,53 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rush-hour-orchest
+spec:
+  selector:
+    app: rush-hour-orchest
+  type:  ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3333
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rush-hour-orchest
+  labels:
+    app: rush-hour-orchest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rush-hour-orchest
+  template:
+    metadata:
+      labels:
+        app: rush-hour-orchest
+    spec:
+      # initContainers:
+      # - name: wait-for-database
+      #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
+      #   command: ['python', 'manage.py', 'wait_for_database']
+      containers:
+      - name: orchest-api
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-orchest:latest
+        ports:
+          - containerPort: 3333  
+        env:
+          - name: DB_HOST
+            value: "127.0.0.1"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "rootpass"
+          - name: DB_NAME
+            value: "orchestdb"
+          - name: KAFKA_SERVICE_ADDRESS
+            value: "kafka-service"
+      imagePullSecrets:
+      - name: secret

@@ -15,11 +15,19 @@ import (
 
 type InputPayment struct {
 	// gorm.Model
+<<<<<<< HEAD
 	MadeByUserID int            `json:"made_by_id" binding:"required"`
 	TotalPrice   int            `json:"total_price" binding:"required"`
 	Paid         bool           `json:"paid" binding:"required"`
 	ProductDict  map[string]int `json:"prod_dict" binding:"required"`
 	PaymentID    int            `json:"payment_id" binding:"required"`
+=======
+	MadeByUserID   	int 	`json:"made_by_id" binding:"required"`
+	TotalPrice		int 	`json:"total_price" binding:"required"`
+	Paid			bool	`json:"paid" binding:"required"`
+	ProductDict		map[string]int	`json:"prod_dict" binding:"required"`
+	PaymentID		int		`json:"payment_id" binding:"required"`
+>>>>>>> 7f55db27b2f4abadba5fdbb62d32a456d7ded1f7
 }
 
 func CreateNewPayment(input []byte) {

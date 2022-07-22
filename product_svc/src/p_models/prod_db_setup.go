@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -15,11 +15,6 @@ var DB *gorm.DB
 
 func ConnectDataBase() {
 
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
 
 	Dbdriver := "mysql"
 	DbHost := os.Getenv("DB_HOST")
@@ -31,7 +26,7 @@ func ConnectDataBase() {
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 	// DBURL := "root:rootpass@tcp(0.0.0.0:3308)/scalabruh_final_proj_prod_db?charset=utf8&parseTime=True&loc=Local"
 
-	DB, _ = gorm.Open(mysql.Open(DBURL), &gorm.Config{})
+	DB, err := gorm.Open(mysql.Open(DBURL), &gorm.Config{})
 
 	if err != nil {
 		fmt.Println("Cannot connect to database ", Dbdriver)

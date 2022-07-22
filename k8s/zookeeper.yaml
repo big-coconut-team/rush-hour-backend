@@ -4,7 +4,6 @@ metadata:
   labels:
     app: zookeeper-service
   name: zookeeper-service
-  namespace: kafka
 spec:
   type: NodePort
   ports:
@@ -12,6 +11,7 @@ spec:
       port: 2181
       nodePort: 30181
       targetPort: 2181
+      protocol: TCP
   selector:
     app: zookeeper
 ---
@@ -21,7 +21,6 @@ metadata:
   labels:
     app: zookeeper
   name: zookeeper
-  namespace: kafka
 spec:
   replicas: 1
   selector:
@@ -33,8 +32,11 @@ spec:
         app: zookeeper
     spec:
       containers:
-        - image: wurstmeister/zookeeper
+        - image: confluentinc/cp-zookeeper:7.0.1
           imagePullPolicy: IfNotPresent
           name: zookeeper
           ports:
             - containerPort: 2181
+          env:
+          - name: ZOOKEEPER_CLIENT_PORT
+            value: "2181"

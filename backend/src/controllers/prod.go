@@ -3,12 +3,15 @@ package controllers
 import (
 	"bytes"
 	"controller_svc/utils"
+<<<<<<< HEAD
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	// "fmt"
+=======
+>>>>>>> 7f55db27b2f4abadba5fdbb62d32a456d7ded1f7
 )
 
 func AddProduct(c *gin.Context) {
@@ -39,7 +42,7 @@ func AddProduct(c *gin.Context) {
 
 	// fmt.Printf("add product: %s",data)
 
-	resp, err := http.Post("http://localhost:8001/api/user/add_product", "application/json", responseBody)
+	resp, err := http.Post("http://rush-hour-product:8001/api/user/add_product", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -51,8 +54,13 @@ func AddProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Success adding product"})
 }
 
+<<<<<<< HEAD
 func DownloadPhoto(c *gin.Context) {
 	resp, err := http.Get("http://localhost:8001/api/user/list_product")
+=======
+func DownloadPhoto(c *gin.Context){
+	resp, err := http.Get("http://rush-hour-product:8001/api/user/list_product")
+>>>>>>> 7f55db27b2f4abadba5fdbb62d32a456d7ded1f7
 	//Handle Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -1,11 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rush-hour-backend
+spec:
+  selector:
+    app: rush-hour-backend
+  type:  NodePort
+  ports:
+  - targetPort: 8088
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    sidecar.jaegertracing.io/inject: "jaeger-production"
   name: rush-hour-backend
   labels:
     app: rush-hour-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: rush-hour-backend
@@ -21,5 +34,7 @@ spec:
       containers:
       - name: backend-api
         image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-backend:latest
+        ports:
+          - containerPort: 8088 
       imagePullSecrets:
       - name: rush-hour-dockerconfigjson

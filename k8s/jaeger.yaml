@@ -12,7 +12,7 @@ spec:
       nodeCount: 3
       redundancyPolicy: SingleRedundancy
       storage: 
-        storageClassName: gp2
+        storageClassName: standard
         size: 5Gi
     esIndexCleaner:
       enabled: true

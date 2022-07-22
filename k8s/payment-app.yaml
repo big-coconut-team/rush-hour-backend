@@ -1,0 +1,64 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rush-hour-payment
+spec:
+  selector:
+    app: rush-hour-payment
+  type:  ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8091
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    sidecar.jaegertracing.io/inject: "jaeger-production"
+  name: rush-hour-payment
+  labels:
+    app: rush-hour-payment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rush-hour-payment
+  template:
+    metadata:
+      labels:
+        app: rush-hour-payment
+    spec:
+      # initContainers:
+      # - name: wait-for-database
+      #   image: ghcr.io/cs-muic/scalable-p1-tnapat2000/pfinal-backend:latest
+      #   command: ['python', 'manage.py', 'wait_for_database']
+      containers:
+      - name: paymentdb
+        image: mariadb:latest
+        ports:
+          - containerPort: 3306
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            value: "rootpass"
+          - name: MARIADB_DATABASE
+            value: "paymentdb"
+      - name: payment-api
+        image: ghcr.io/big-coconut-team/rush-hour-backend/pfinal-payment_svc:latest
+        ports:
+          - containerPort: 8091
+        env:
+          - name: DB_HOST
+            value: "127.0.0.1"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_USER
+            value: "root"
+          - name: DB_PASSWORD
+            value: "rootpass"
+          - name: DB_NAME
+            value: "paymentdb"    
+          - name: KAFKA_SERVICE_ADDRESS
+            value: "kafka-service"
+      imagePullSecrets:
+      - name: rush-hour-dockerconfigjson

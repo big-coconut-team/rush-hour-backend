@@ -13,7 +13,6 @@ RUN go build -tags musl -o /order_svc
 FROM alpine:3.16.0
 
 COPY --from=build /order_svc /order_svc
-COPY --from=build /app/.env /.env
 
 EXPOSE 8099
 CMD [ "/order_svc" ]

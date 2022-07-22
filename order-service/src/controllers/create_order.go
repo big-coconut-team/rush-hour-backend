@@ -25,7 +25,11 @@ type InputOrder struct {
 	TotalPrice   int            `json:"total_price" binding:"required"`
 }
 
+<<<<<<< HEAD
 func CreateOrder(input []byte) int {
+=======
+func CreateOrder(input []byte) (int) {
+>>>>>>> 7f55db27b2f4abadba5fdbb62d32a456d7ded1f7
 	var io InputOrder
 	err := json.Unmarshal(input, &io)
 
@@ -37,10 +41,11 @@ func CreateOrder(input []byte) int {
 	if err != nil {
 		log.Panic(err)
 	}
-	_, err = o.SaveOrder()
+	ord, err := o.SaveOrder()
 	if err != nil {
 		log.Panic(err)
 	}
+<<<<<<< HEAD
 	order_id = o.OrderID
 	return o.OrderID
 }
@@ -49,3 +54,7 @@ func GetOrderId(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"order_id": order_id})
 	return
 }
+=======
+	return ord.OrderID
+}
+>>>>>>> 7f55db27b2f4abadba5fdbb62d32a456d7ded1f7
