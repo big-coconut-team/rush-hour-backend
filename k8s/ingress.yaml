@@ -1,18 +1,16 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: rush-hour-ingress
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - http:
+    - http:
       paths:
-      - path: /api/
-        pathType: Prefix
-        backend:
-          service: 
-            name: rush-hour-backend
-            port:
-              number: 80
-
+        - path: /api/
+          pathType: Prefix
+          backend:
+            serviceName: rush-hour-backend
+            servicePort: 8088

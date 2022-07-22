@@ -5,11 +5,9 @@ metadata:
 spec:
   selector:
     app: rush-hour-backend
-  type:  ClusterIP
+  type:  NodePort
   ports:
-  - name:  http
-    port:  80
-    targetPort: 8088
+  - targetPort: 8088
 ---
 apiVersion: apps/v1
 kind: Deployment
