@@ -1,0 +1,32 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: es
+spec:
+  version: 8.3.2
+  nodeSets:
+  - name: default
+    count: 1
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 250Mi
+              storage: 5Gi
+              cpu: 2
+            limits:
+              memory: 250Mi
+              storage: 5Gi
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            memory: 250Mi
+            storage: 5Gi
+        storageClassName: standard
